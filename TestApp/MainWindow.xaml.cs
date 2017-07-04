@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using Google.Apis.Services;
+using Google.Apis.Translate.v2;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,8 +34,8 @@ namespace TestApp
             var fd = new OpenFileDialog();
             fd.AddExtension = true;
             fd.Filter = "Pliki tekstowe|*.txt";
-            fd.Multiselect=false;
-            if(fd.ShowDialog() == true)
+            fd.Multiselect = false;
+            if (fd.ShowDialog() == true)
             {
                 tbSource.Text = fd.FileName;
             }
@@ -56,9 +58,22 @@ namespace TestApp
         {
             if (!File.Exists(tbSource.Text) || !Directory.Exists(System.IO.Path.GetDirectoryName(tbDestination.Text)))
                 return;
-            var text = File.ReadAllText(tbDestination.Text).Split(new[] { ' ', ',', '.', '\n', '\r' },StringSplitOptions.RemoveEmptyEntries);
+            var srcText = File.ReadAllText(tbSource.Text).Split(new[] { ' ', ',', '.', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
+            var service = new TranslateService(new BaseClientService.Initializer()
+            {
+                ApiKey = File.ReadAllText("key.txt"),
+                ApplicationName = "Translate API Sample"
+            });
 
+            var response = service.Translations.List(srcText, "pl").Execute();
+            var translations = new Dictionary<string,string>();
+
+            for(int i =0;i<response.Translations.Count;++i)
+            {
+                translations.Add(srcText[i], response.Translations[i].TranslatedText);
+            }
+            File.WriteAllText(tbDestination.Text, string.Join(Environment.NewLine, translations.Select(d => d.Key + ";" + d.Value)));
         }
     }
 }

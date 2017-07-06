@@ -19,9 +19,9 @@ namespace TestApp
                 {
                     sb.AppendFormat("{0}\t{1}\t{2}\t{3}\r\n",
                         result.word,
-                        string.Join("; ", result.lexicalEntries.Select(x => x.lexicalCategory + " - "
-                            + string.Join(". ", x.entries.SelectMany(t => t.senses).SelectMany(t => t.definitions)))),
-                         string.Join("; ", result.lexicalEntries.SelectMany(x => x.entries).SelectMany(x => x.senses).SelectMany(x => x.examples).Select(x => x.text)),
+                        string.Join("; ", result?.lexicalEntries?.Select(x => x?.lexicalCategory + " - "
+                            + string.Join(". ", x?.entries?.SelectMany(t => t?.senses)?.SelectMany(t => t?.definitions)))),
+                         string.Join("; ", result?.lexicalEntries?.SelectMany(x => x?.entries)?.SelectMany(x => x?.senses)?.SelectMany(x => x.examples).Select(x => x.text)),
                          translate.Translation
                         );
                 }

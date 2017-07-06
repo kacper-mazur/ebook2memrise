@@ -18,6 +18,7 @@ namespace TestApp
 
             var tmp = new List<string>();
 
+            var excluded = File.ReadAllLines(@"C:\Users\Kacper\Documents\git\ebook2memrise\data\baseWordList.txt");
             for (int i = 0; i < srcText.Count(); ++i)
             {
                 // replace digits
@@ -26,16 +27,18 @@ namespace TestApp
                 tmpWord = Regex.Replace(tmpWord, @"[+*\\.,\/;:'\[\]|}{<>""@#$%^&*()_+=`~]*", string.Empty);
                 // to lower
                 tmpWord = tmpWord.ToLower().Trim();
-                if (tmpWord.Count() > 2)
+                if (tmpWord.Count() > 2 && !excluded.Contains(tmpWord))
                     tmp.Add(tmpWord);
 
                 // add potential phrasal verb
-                if (i > 0 && prepositions.Contains(tmpWord))
-                {
-                    tmp.Add(srcText[i - 1] + " " + srcText[i]);
-                }
+                //if (i > 0 && prepositions.Contains(tmpWord) && !excluded.Contains(srcText[i - 1] + " " + srcText[i]))
+                //{
+                //    tmp.Add(srcText[i - 1] + " " + srcText[i]);
+                //}
             }
-            tmp = tmp.Distinct().ToList();
+            tmp = tmp.Distinct().Take(100).ToList();
+
+
             return tmp;
         }
     }

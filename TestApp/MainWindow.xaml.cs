@@ -45,7 +45,7 @@ namespace TestApp
 
             var words = fileWordsProcessor.Process(tbSource.Text, tbDestination.Text);
             var translations = wordsTranslator.Process(words);
-            //wordsToFileExporter.Process(translations, tbDestination.Text);
+            wordsToFileExporter.Process(translations, tbDestination.Text);
         }
     }
 }

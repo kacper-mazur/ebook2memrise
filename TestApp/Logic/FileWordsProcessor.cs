@@ -14,17 +14,26 @@ namespace TestApp
                 return null;
             var srcText = File.ReadAllText(source).Split(new[] { ' ', ',', '.', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
+            var prepositions = new[] { "aback", "about", "across", "after", "against", "ahead", "along", "apart", "around", "aside", "at", "away", "back", "before", "behind", "between", "beyond", "by", "down", "for", "forth", "forward", "from", "in", "into", "of", "off", "on", "onto", "out", "over", "round", "through", "to", "together", "towards", "under", "up", "with", "without" };
+
             var tmp = new List<string>();
-            foreach(var t in srcText)
+
+            for (int i = 0; i < srcText.Count(); ++i)
             {
                 // replace digits
-                var tmpWord = Regex.Replace(t, @"[\d]", string.Empty);
-                // replace non word characters
-                tmpWord = Regex.Replace(tmpWord, @"[\W]", string.Empty);
+                var tmpWord = Regex.Replace(srcText[i], @"[\d]", string.Empty);
+                // replace non word characters (except - ')
+                tmpWord = Regex.Replace(tmpWord, @"[+*\\.,\/;:'\[\]|}{<>""@#$%^&*()_+=`~]*", string.Empty);
                 // to lower
-                tmpWord = tmpWord.ToLower();
-                if(tmpWord.Count() > 2)
-                tmp.Add(tmpWord);
+                tmpWord = tmpWord.ToLower().Trim();
+                if (tmpWord.Count() > 2)
+                    tmp.Add(tmpWord);
+
+                // add potential phrasal verb
+                if (i > 0 && prepositions.Contains(tmpWord))
+                {
+                    tmp.Add(srcText[i - 1] + " " + srcText[i]);
+                }
             }
             tmp = tmp.Distinct().ToList();
             return tmp;

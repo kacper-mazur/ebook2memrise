@@ -67,6 +67,8 @@
     <Build Include="dbo\Tables\words.sql" />
     <Build Include="dbo\Tables\configuration.sql" />
     <Build Include="dbo\Tables\raw_words.sql" />
+    <Build Include="dbo\Tables\users.sql" />
+    <Build Include="dbo\Tables\file_raw.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ebook2memrise.database.publish.xml" />

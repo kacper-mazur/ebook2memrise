@@ -1,4 +1,5 @@
 ﻿using ebook2memrise.model;
+using ebook2memrise.webjob.Logic;
 using System.Linq;
 
 namespace ebook2memrise.webjob
@@ -7,14 +8,13 @@ namespace ebook2memrise.webjob
     {
         public static void Main(string[] args)
         {
-            using (var context = new ebook2memriseEntities())
-            {
-                if (context.configuration.Count() == 0)
-                {
-                    context.configuration.Add(new configuration() { key = "test", value = "test" });
-                    context.SaveChanges();
-                }
-            }
+            var wordsTranslator = new WordsTranslator();
+            var fileWordsProcessor = new FileWordsProcessor();
+            var wordsToFileExporter = new WordToFileExporter();
+
+            var words = fileWordsProcessor.Process();
+            //var translations = wordsTranslator.Process(words);
+            //wordsToFileExporter.Process(translations, tbDestination.Text);
         }
     }
 }

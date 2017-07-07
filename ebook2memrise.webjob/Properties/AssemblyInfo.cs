@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ebook2memrise.service")]
+[assembly: AssemblyTitle("ebook2memrise.webjob")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("ebook2memrise.service")]
+[assembly: AssemblyProduct("ebook2memrise.webjob")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6ae800e9-e606-4904-954e-8de1e79564e0")]
+[assembly: Guid("cfb91041-c6fe-48e6-bf2a-e108f51c9080")]
 
 // Version information for an assembly consists of the following four values:
 //

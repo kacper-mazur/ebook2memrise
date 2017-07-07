@@ -26,5 +26,7 @@ namespace ebook2memrise.model
         }
     
         public virtual DbSet<words> words { get; set; }
+        public virtual DbSet<configuration> configuration { get; set; }
+        public virtual DbSet<raw_words> raw_words { get; set; }
     }
 }

@@ -4,7 +4,24 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ebook2memriseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ebook2memriseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="configuration">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="key" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="value" Type="varchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <EntityType Name="raw_words">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="word" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="translated" Type="bit" Nullable="false" />
+          <Property Name="exported" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="words">
           <Key>
             <PropertyRef Name="Id" />
@@ -16,10 +33,11 @@
           <Property Name="example" Type="nvarchar(max)" />
         </EntityType>
         <EntityContainer Name="ebook2memriseModelStoreContainer">
+          <EntitySet Name="configuration" EntityType="Self.configuration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="raw_words" EntityType="Self.raw_words" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="words" EntityType="Self.words" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ebook2memriseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -35,7 +53,26 @@
         </EntityType>
         <EntityContainer Name="ebook2memriseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="words" EntityType="Self.words" />
+          <EntitySet Name="configuration" EntityType="ebook2memriseModel.configuration" />
+          <EntitySet Name="raw_words" EntityType="ebook2memriseModel.raw_words" />
         </EntityContainer>
+        <EntityType Name="configuration">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="key" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="value" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="raw_words">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="word" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="translated" Type="Boolean" Nullable="false" />
+          <Property Name="exported" Type="Boolean" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -50,6 +87,25 @@
                 <ScalarProperty Name="translation" ColumnName="translation" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
                 <ScalarProperty Name="example" ColumnName="example" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="configuration">
+            <EntityTypeMapping TypeName="ebook2memriseModel.configuration">
+              <MappingFragment StoreEntitySet="configuration">
+                <ScalarProperty Name="value" ColumnName="value" />
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="raw_words">
+            <EntityTypeMapping TypeName="ebook2memriseModel.raw_words">
+              <MappingFragment StoreEntitySet="raw_words">
+                <ScalarProperty Name="exported" ColumnName="exported" />
+                <ScalarProperty Name="translated" ColumnName="translated" />
+                <ScalarProperty Name="word" ColumnName="word" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

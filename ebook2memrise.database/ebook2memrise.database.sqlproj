@@ -65,10 +65,13 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\words.sql" />
+    <Build Include="dbo\Tables\configuration.sql" />
+    <Build Include="dbo\Tables\raw_words.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ebook2memrise.database.publish.xml" />
     <None Include="Scripts\Data\words.sql" />
+    <None Include="ebook2memrise.azure.database.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

@@ -6,6 +6,8 @@
     <edmx:Diagrams>
       <Diagram DiagramId="c50684f017114d4c968189d2a14d28a8" Name="Diagram1">
         <EntityTypeShape EntityType="ebook2memriseModel.words" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ebook2memriseModel.configuration" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ebook2memriseModel.raw_words" Width="1.5" PointX="0.75" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -22,10 +22,11 @@ namespace ebook2memrise.webjob.Logic
                 var file = context.file_raw.First();
                 fileContent = System.Text.Encoding.Default.GetString(file.file_content);
                 fileID = file.Id;
+                Console.WriteLine("Processing file {0}", file.file_name);
 
                 excluded = context.words.Select(r => r.word).ToList();
 
-                var srcText = fileContent.Split(new[] { ' ', ',', '.', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                var srcText = fileContent.Split(new string[] { " ", ",", ".", "\n", "\r", "--" }, StringSplitOptions.RemoveEmptyEntries);
                 var tmp = new List<string>();
 
                 for (int i = 0; i < srcText.Count(); ++i)
@@ -33,7 +34,13 @@ namespace ebook2memrise.webjob.Logic
                     // replace digits
                     var tmpWord = Regex.Replace(srcText[i], @"[\d]", string.Empty);
                     // replace non word characters (except - ')
-                    tmpWord = Regex.Replace(tmpWord, @"[+*\\.,\/;:'\[\]|}{<>""@#$%^&*()_+=`~]*", string.Empty);
+                    tmpWord = Regex.Replace(tmpWord, @"[+*\\.,\/;:\[\]|}{<>""@#$%^&*()_+=`~!?]*", string.Empty);
+                    // ' at the beginning
+                    tmpWord = tmpWord.StartsWith("'") ? tmpWord.Substring(1) : tmpWord;
+                    // ' at the beginning
+                    tmpWord = tmpWord.EndsWith("'") ? tmpWord.Substring(0,tmpWord.Length-1) : tmpWord;
+                    // replace double --
+                    tmpWord = tmpWord.Replace("--", string.Empty);
                     // to lower
                     tmpWord = tmpWord.ToLower().Trim();
                     if (tmpWord.Count() > 2 && !excluded.Contains(tmpWord))
@@ -47,6 +54,7 @@ namespace ebook2memrise.webjob.Logic
                 }
                 context.file_raw.Remove(file);
                 context.SaveChanges();
+                Console.WriteLine("File {0} processed", file.file_name);
             }
             return null;
         }

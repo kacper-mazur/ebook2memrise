@@ -47,6 +47,7 @@
           <Property Name="translation" Type="nvarchar" MaxLength="150" Nullable="false" />
           <Property Name="definition" Type="nvarchar(max)" />
           <Property Name="example" Type="nvarchar(max)" />
+          <Property Name="exported" Type="bit" Nullable="false" />
         </EntityType>
         <EntityContainer Name="ebook2memriseModelStoreContainer">
           <EntitySet Name="configuration" EntityType="Self.configuration" Schema="dbo" store:Type="Tables" />
@@ -68,6 +69,7 @@
           <Property Name="translation" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="definition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="example" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="exported" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityContainer Name="ebook2memriseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="words" EntityType="Self.words" />
@@ -118,6 +120,7 @@
           <EntitySetMapping Name="words">
             <EntityTypeMapping TypeName="ebook2memriseModel.words">
               <MappingFragment StoreEntitySet="words">
+                <ScalarProperty Name="exported" ColumnName="exported" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="word" ColumnName="word" />
                 <ScalarProperty Name="translation" ColumnName="translation" />

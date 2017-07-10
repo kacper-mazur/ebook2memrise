@@ -19,5 +19,6 @@ namespace ebook2memrise.model
         public string translation { get; set; }
         public string definition { get; set; }
         public string example { get; set; }
+        public bool exported { get; set; }
     }
 }

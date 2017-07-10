@@ -4,7 +4,8 @@
 	[word] NVARCHAR(150) NOT NULL,
 	[translation] NVARCHAR(150) NOT NULL,
 	[definition] NVARCHAR(MAX) NULL,
-	[example] NVARCHAR(MAX) NULL
+	[example] NVARCHAR(MAX) NULL,
+	[exported] BIT NOT NULL DEFAULT(0)
 )
 GO
 

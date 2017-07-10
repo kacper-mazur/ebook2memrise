@@ -6,21 +6,26 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using ebook2memrise.webjob.Model;
+using ebook2memrise.model;
 
 namespace ebook2memrise.webjob.Logic
 {
     public class WordsTranslator
     {
-        public List<DictionaryEntry> Process(IList<string> words)
+        public List<DictionaryEntry> Process()
         {
             var translations = new List<DictionaryEntry>();
-            foreach (var word in words)
+            using (var context = new ebook2memriseEntities())
             {
-                var t = GetDefinition(word);
-                if (t != null)
+                foreach (var word in context.raw_words.Take(50))
                 {
-                    t.Translation = TranslateText(word);
-                    translations.Add(t);
+                    var t = GetDefinition(word.word);
+                    if (t != null)
+                    {
+                        t.Translation = TranslateText(word.word);
+                        translations.Add(t);
+                    }
+
                 }
             }
             return translations;

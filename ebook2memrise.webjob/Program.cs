@@ -16,7 +16,7 @@ namespace ebook2memrise.webjob
             importWordsProcessor.Process();
             //fileWordsProcessor.Process();
             var translations = wordsTranslator.Process();
-            //wordsToFileExporter.Process(translations, tbDestination.Text);
+            wordsToFileExporter.Process(translations, "destination.txt");
         }
     }
 }

@@ -5,28 +5,64 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using ebook2memrise.webjob.Model;
+using ebook2memrise.model;
 
 namespace ebook2memrise.webjob.Logic
 {
     public class WordToFileExporter
     {
+        private string PrepareFileName(string destination, int counter)
+        {
+            return Path.Combine(
+                Path.GetDirectoryName(destination),
+                Path.GetFileNameWithoutExtension(destination) + "_" + counter.ToString().PadLeft(4, '0') + Path.GetExtension(destination));
+        }
         public void Process(IList<DictionaryEntry> translations, string destination)
         {
             var sb = new StringBuilder();
+            var words = new List<model.words>();
             foreach (var translate in translations)
             {
                 foreach (var result in translate.results)
                 {
+                    string definition = string.Join("; ", 
+                        result.lexicalEntries?
+                            .Select(x => x.lexicalCategory + " - "
+                               + string.Join(". ", x.entries
+                               .SelectMany(t => t.senses ?? new List<Sens>())
+                               .SelectMany(t => t.definitions ?? new List<string>()))));
+
+                    string example = string.Join("; ", result?.lexicalEntries?
+                        .SelectMany(x => x.entries ?? new List<Entry>())
+                        .SelectMany(x => x.senses ?? new List<Sens>())
+                        .SelectMany(x => x.examples ?? new List<Example>())
+                        .Select(x => x.text));
+
                     sb.AppendFormat("{0}\t{1}\t{2}\t{3}\r\n",
                         result.word,
-                        string.Join("; ", result?.lexicalEntries?.Select(x => x?.lexicalCategory + " - "
-                            + string.Join(". ", x?.entries?.SelectMany(t => t?.senses)?.SelectMany(t => t?.definitions)))),
-                         string.Join("; ", result?.lexicalEntries?.SelectMany(x => x?.entries)?.SelectMany(x => x?.senses)?.SelectMany(x => x.examples).Select(x => x.text)),
+                        definition,
+                         example,
                          translate.Translation
                         );
+
+                    words.Add(new model.words() { word = result.word, definition=definition, example = example, translation = translate.Translation });
                 }
             }
-            File.WriteAllText(destination, sb.ToString());
+            var counter = 0;
+            var fileName = "";
+            //bool append = false;
+            do
+            {
+                counter++;
+                fileName = PrepareFileName(destination,counter);
+            }
+            while (File.Exists(fileName) 
+            //|| File.ReadAllLines(fileName).Count() < 50
+            );                    
+
+            File.WriteAllText(fileName, sb.ToString());
+
+
             foreach (var translate in translations)
             {
                 foreach (var result in translate.results)
@@ -53,6 +89,15 @@ namespace ebook2memrise.webjob.Logic
                             }
                         }
                 }
+            }
+
+            using (var context = new ebook2memriseEntities())
+            {
+                context.words.AddRange(words);
+                var strings = words.Select(w => w.word).ToList();
+                var processed = context.raw_words.Where(r => strings.Contains(r.word)).ToList();
+                context.raw_words.RemoveRange(processed);
+                context.SaveChanges();
             }
         }
     }

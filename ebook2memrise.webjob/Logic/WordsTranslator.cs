@@ -12,21 +12,39 @@ namespace ebook2memrise.webjob.Logic
 {
     public class WordsTranslator
     {
+        private const string LogFileName = "translateLog.txt";
+        private IList<string> toIgnore = new List<string>();
+
         public List<DictionaryEntry> Process()
         {
+            if (File.Exists(LogFileName))
+                File.Delete(LogFileName);
+
+            toIgnore.Clear();
             var translations = new List<DictionaryEntry>();
             using (var context = new ebook2memriseEntities())
             {
-                foreach (var word in context.raw_words.Take(50))
+                foreach (var word in context.raw_words.Take(100))
                 {
                     var t = GetDefinition(word.word);
                     if (t != null)
                     {
                         t.Translation = TranslateText(word.word);
                         translations.Add(t);
+                        if (translations.Count >= 15)
+                            break;
                     }
-
                 }
+
+                foreach (var t in toIgnore)
+                {
+                    if (!context.words.Any(db => db.word == t))
+                        context.words.Add(new words() { word = t, exported = true, translation = "IGNORED" });
+                    var raw = context.raw_words.FirstOrDefault(r => r.word == t);
+                    if (raw != null)
+                        context.raw_words.Remove(raw);
+                }
+                context.SaveChanges();
             }
             return translations;
         }
@@ -61,8 +79,10 @@ namespace ebook2memrise.webjob.Logic
             }
             catch (Exception ex)
             {
-                Console.Out.WriteLine("-----------------");
+                Console.Out.WriteLine("----------------- " + word);
                 Console.Out.WriteLine(ex.Message);
+                File.AppendAllLines(LogFileName, new List<string>() { word });
+                toIgnore.Add(word);
                 return null;
             }
         }

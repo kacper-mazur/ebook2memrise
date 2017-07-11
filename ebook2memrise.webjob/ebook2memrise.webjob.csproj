@@ -75,9 +75,12 @@
   <ItemGroup>
     <Compile Include="Logic\FileWordsProcessor.cs" />
     <Compile Include="Logic\ImportKnownWordsProcessor.cs" />
+    <Compile Include="Logic\RemoveDuplicatedProcessor.cs" />
     <Compile Include="Logic\WordsTranslator.cs" />
     <Compile Include="Logic\WordToFileExporter.cs" />
+    <Compile Include="Model\Constants.cs" />
     <Compile Include="Model\DictionaryEntry.cs" />
+    <Compile Include="Model\GlosbeTranslateEntry.cs" />
     <Compile Include="Model\TranslateEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,7 +96,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="words.txt">
+    <Content Include="import\words.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

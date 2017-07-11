@@ -25,7 +25,7 @@ namespace ebook2memrise.webjob.Logic
             {
                 foreach (var result in translate.results)
                 {
-                    string definition = string.Join("; ", 
+                    string definition = string.Join("; ",
                         result.lexicalEntries?
                             .Select(x => x.lexicalCategory + " - "
                                + string.Join(". ", x.entries
@@ -45,7 +45,7 @@ namespace ebook2memrise.webjob.Logic
                          translate.Translation
                         );
 
-                    words.Add(new model.words() { word = result.word, definition=definition, example = example, translation = translate.Translation });
+                    words.Add(new model.words() { word = result.word, definition = definition, example = example, translation = translate.Translation });
                 }
             }
             var counter = 0;
@@ -54,14 +54,17 @@ namespace ebook2memrise.webjob.Logic
             do
             {
                 counter++;
-                fileName = PrepareFileName(destination,counter);
+                fileName = PrepareFileName(destination, counter);
             }
-            while (File.Exists(fileName) 
+            while (File.Exists(fileName)
             //|| File.ReadAllLines(fileName).Count() < 50
-            );                    
+            );
 
             File.WriteAllText(fileName, sb.ToString());
 
+            var audioFileDirectory = Path.Combine(Path.GetDirectoryName(destination), Path.GetFileNameWithoutExtension(destination));
+            if (!Directory.Exists(audioFileDirectory))
+                Directory.CreateDirectory(audioFileDirectory);
 
             foreach (var translate in translations)
             {
@@ -76,11 +79,11 @@ namespace ebook2memrise.webjob.Logic
                         {
                             try
                             {
-                                if (File.Exists(Path.Combine(Path.GetDirectoryName(destination), result.word + "_" + i + ".mp3")))
-                                    File.Delete(Path.Combine(Path.GetDirectoryName(destination), result.word + "_" + i + ".mp3"));
+                                if (File.Exists(Path.Combine(audioFileDirectory, result.word + "_" + i + ".mp3")))
+                                    File.Delete(Path.Combine(audioFileDirectory, result.word + "_" + i + ".mp3"));
                                 client.DownloadFile(
                                     pronunciations[i],
-                                    Path.Combine(Path.GetDirectoryName(destination), result.word + "_" + i + ".mp3"));
+                                    Path.Combine(audioFileDirectory, result.word + "_" + i + ".mp3"));
                             }
                             catch (Exception ex)
                             {
@@ -99,6 +102,8 @@ namespace ebook2memrise.webjob.Logic
                 context.raw_words.RemoveRange(processed);
                 context.SaveChanges();
             }
+
+            File.WriteAllLines(Path.Combine(Constants.ImportDirectory, fileName), words.Select(w => w.word).ToArray());
         }
     }
 }

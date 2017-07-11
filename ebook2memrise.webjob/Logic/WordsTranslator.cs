@@ -24,15 +24,20 @@ namespace ebook2memrise.webjob.Logic
             var translations = new List<DictionaryEntry>();
             using (var context = new ebook2memriseEntities())
             {
-                foreach (var word in context.raw_words.Take(100))
+                foreach (var word in context.raw_words.Take(Constants.FileSize*3))
                 {
                     var t = GetDefinition(word.word);
                     if (t != null)
                     {
-                        t.Translation = TranslateText(word.word);
-                        translations.Add(t);
-                        if (translations.Count >= 15)
-                            break;
+                        t.Translation = TranslateText2(word.word);
+                        if (!string.IsNullOrEmpty(t.Translation))
+                        {
+                            translations.Add(t);
+                            if (translations.Count >= Constants.FileSize)
+                                break;
+                        }
+                        else
+                            toIgnore.Add(word.word);
                     }
                 }
 
@@ -105,6 +110,29 @@ namespace ebook2memrise.webjob.Logic
 
         }
 
+        private string Query = @"https://glosbe.com/gapi/translate?from=eng&dest=pol&format=json&phrase={0}&pretty=true";
+        public string TranslateText2(string word)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format(Query,word));
+            request.Method = "GET";
+            request.ContentType = "application/json";
+            try
+            {
+                WebResponse webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                string response = responseReader.ReadToEnd();
+                var t = JsonConvert.DeserializeObject<GlosbeTranslateEntry>(response);
+                responseReader.Close();
+                return string.Join(", ", t.tuc.Where(tuc=> tuc.phrase != null && !string.IsNullOrEmpty(tuc.phrase.text)).Take(3).Select(tuc=> tuc.phrase.text));
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine("-----------------");
+                Console.Out.WriteLine(ex.Message);
+                return null;
+            }
+        }
 
         public string TranslateText(string word)
         {

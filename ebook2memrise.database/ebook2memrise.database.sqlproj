@@ -84,6 +84,7 @@
     <Folder Include="Scripts" />
     <Folder Include="Scripts\Post-Deployment" />
     <Folder Include="Scripts\Post-Deployment\Data" />
+    <Folder Include="Backup" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\words.sql" />
@@ -98,6 +99,7 @@
   <ItemGroup>
     <None Include="ebook2memrise.database.publish.xml" />
     <None Include="ebook2memrise.azure.database.publish.xml" />
+    <None Include="Backup\ebook2memrise_2017-07-11.bak" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

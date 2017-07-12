@@ -62,7 +62,7 @@ namespace ebook2memrise.webjob.Logic
 
             File.WriteAllText(fileName, sb.ToString());
 
-            var audioFileDirectory = Path.Combine(Path.GetDirectoryName(destination), Path.GetFileNameWithoutExtension(destination));
+            var audioFileDirectory = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
             if (!Directory.Exists(audioFileDirectory))
                 Directory.CreateDirectory(audioFileDirectory);
 
@@ -70,7 +70,7 @@ namespace ebook2memrise.webjob.Logic
             {
                 foreach (var result in translate.results)
                 {
-                    var pronunciations = result.lexicalEntries.SelectMany(x => x.pronunciations).Select(x => x.audioFile).ToList();
+                    var pronunciations = result.lexicalEntries.SelectMany(x => x.pronunciations ?? new List<Pronunciation3>()).Select(x => x.audioFile).ToList();
                     pronunciations.AddRange(result.pronunciations?.Select(x => x.audioFile) ?? new List<string>());
                     pronunciations = pronunciations.Where(p => !string.IsNullOrEmpty(p)).Distinct().ToList();
 

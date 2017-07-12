@@ -99,7 +99,9 @@
   <ItemGroup>
     <None Include="ebook2memrise.database.publish.xml" />
     <None Include="ebook2memrise.azure.database.publish.xml" />
-    <None Include="Backup\ebook2memrise_2017-07-11.bak" />
+    <None Include="Backup\ebook2memrise.bak">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

@@ -85,6 +85,7 @@
     <Folder Include="Scripts\Post-Deployment" />
     <Folder Include="Scripts\Post-Deployment\Data" />
     <Folder Include="Backup" />
+    <Folder Include="dbo\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\words.sql" />
@@ -95,6 +96,8 @@
     <None Include="Scripts\Post-Deployment\Data\words.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Build Include="dbo\Views\v_words_ignored.sql" />
+    <Build Include="dbo\Views\v_words_known.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ebook2memrise.database.publish.xml" />

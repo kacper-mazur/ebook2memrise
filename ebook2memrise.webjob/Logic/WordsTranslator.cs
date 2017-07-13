@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using ebook2memrise.webjob.Model;
 using ebook2memrise.model;
+using System.Threading;
 
 namespace ebook2memrise.webjob.Logic
 {
@@ -90,6 +91,7 @@ namespace ebook2memrise.webjob.Logic
                 toIgnore.Add(word);
                 return null;
             }
+            Thread.Sleep(1000);
         }
 
         private string GetTranslateEntries(string source, string target, string word)

@@ -91,7 +91,10 @@ namespace ebook2memrise.webjob.Logic
                 toIgnore.Add(word);
                 return null;
             }
-            Thread.Sleep(1000);
+            finally
+            {
+                Thread.Sleep(1000);
+            }
         }
 
         private string GetTranslateEntries(string source, string target, string word)

@@ -20,7 +20,7 @@ namespace ebook2memrise.webjob
             removeDuplicatedProcessor.Process();
             fileWordsProcessor.Process();
             var translations = wordsTranslator.Process();
-            wordsToFileExporter.Process(translations, "destination.txt");
+            wordsToFileExporter.Process(translations, "memoirs.txt");
         }
     }
 }

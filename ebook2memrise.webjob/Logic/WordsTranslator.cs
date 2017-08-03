@@ -25,7 +25,7 @@ namespace ebook2memrise.webjob.Logic
             var translations = new List<DictionaryEntry>();
             using (var context = new ebook2memriseEntities())
             {
-                foreach (var word in context.raw_words.Take(Constants.FileSize*3))
+                foreach (var word in context.raw_words.Take(Constants.FileSize*5))
                 {
                     var t = GetDefinition(word.word);
                     if (t != null)

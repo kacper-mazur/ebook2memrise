@@ -9,6 +9,7 @@ namespace ebook2memrise.webjob.Model
     public static class Constants
     {
         public static string ImportDirectory = "import";
-        public static int FileSize = 50;
+        public static string ImportBooksDirectory = "books";
+        public static int FileSize = 1;
     }
 }

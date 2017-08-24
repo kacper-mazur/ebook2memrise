@@ -27,6 +27,7 @@ namespace ebook2memrise.webjob.Logic
                 {
                     string definition = string.Join("; ",
                         result.lexicalEntries?
+                            .Where(x=> x.entries != null)
                             .Select(x => x.lexicalCategory + " - "
                                + string.Join(". ", x.entries
                                .SelectMany(t => t.senses ?? new List<Sens>())

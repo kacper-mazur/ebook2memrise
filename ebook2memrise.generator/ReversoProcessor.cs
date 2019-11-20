@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using HtmlAgilityPack;
+
+namespace ebook2memrise.generator
+{
+    public class ReversoProcessor
+    {
+        public string Process(string fileContent, string word)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(fileContent);
+
+            HtmlNode results = doc.DocumentNode.SelectSingleNode("/html/body/div[@id='wrapper']/section[@id='body-content']/div[@class='left-content']");
+
+            var pos = results.SelectSingleNode("section[@id='top-results']/div[@id='pos-filters']/button").InnerText.Trim();
+            var translations = results.SelectNodes("section[@id='top-results']/div[@id='translations-content']/div").Select(s => s.InnerText.Trim());
+            
+            var examples = results.SelectNodes("section[@id='examples-content']/div").Select(s => 
+                    Trim(s?.SelectSingleNode("div[@class='src ltr']/span[@lang='ru']")?.InnerText)
+                    + " " +
+                    Trim(s?.SelectSingleNode("div[@class='trg ltr']/span[@class='text']")?.InnerText?.Trim()));
+            
+            var result = $"{word}\t{string.Join(", ", translations)}\t{string.Join(" | ", examples.Take(3))}\t{pos}";
+            return result;
+        }
+
+        private string Trim(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return string.Empty;
+
+            var result = content?.Trim()?.Replace("\r\n", " ");
+            while (result.Contains("  "))
+            {
+                result = result.Replace("  ", " ");
+            }
+
+            return result;
+        }
+    }
+}

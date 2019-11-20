@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using HtmlAgilityPack;
 
 namespace ebook2memrise.generator
 {
     class Program
     {
-
         static void Main(string[] args)
         {
+            new ReversoProcessor().Process(File.ReadAllText("Reverso.html"), "проворный");
+
             var wordlist = File.ReadAllLines(@"GoldenDict-history.txt");
 
             // reverso - copy cookies here, after logging in
@@ -19,6 +21,7 @@ namespace ebook2memrise.generator
                 using (var Client = new CookieAwareWebClient())
                 {
                     var response = Client.DownloadString("https://context.reverso.net/translation/russian-english/" + word);
+                   
                 }
 
                 //forvo- copy cookies here, after logging in

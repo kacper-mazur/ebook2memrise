@@ -9,7 +9,7 @@ namespace ebook2memrise.generator
 {
     public class ReversoProcessor
     {
-        public string Process(string fileContent, string word)
+        public string Process(string fileContent)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace ebook2memrise.generator
                     Trim(s?.SelectSingleNode("div[@class='trg ltr']/span[@class='text']")?.InnerText?.Trim()));
 
                 var result =
-                    $"{word}\t{string.Join(", ", translations.Take(4))}\t{string.Join(" | ", examples.Take(3))}\t{pos}";
+                    $"{string.Join(", ", translations.Take(4))}\t{string.Join(" | ", examples.Take(3))}\t{pos}";
 
                 return result;
             }

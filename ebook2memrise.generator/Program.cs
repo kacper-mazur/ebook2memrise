@@ -22,7 +22,7 @@ namespace ebook2memrise.generator
                 {
                     var data = client.DownloadData("https://context.reverso.net/translation/russian-english/" + word);
                     var response = Encoding.UTF8.GetString(data);
-                    fileContent += processor.Process(response, word) + "\r\n";
+                    fileContent += word + "\t" + processor.Process(response) + "\r\n";
                 }
 
                 //forvo- copy cookies here, after logging in

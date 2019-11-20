@@ -16,14 +16,14 @@ namespace ebook2memrise.generator
 
             foreach (var word in wordlist)
             {
-                using (var Client = new CookieAwareWebClient("https://context.reverso.net", ""))
+                using (var Client = new CookieAwareWebClient())
                 {
                     var response = Client.DownloadString("https://context.reverso.net/translation/russian-english/" + word);
                 }
 
                 //forvo- copy cookies here, after logging in
                 //Cookies.SetCookies(new Uri("https://forvo.com"), "");
-                using (var Client = new CookieAwareWebClient("https://forvo.com", ""))
+                using (var Client = new CookieAwareWebClient())
                 {
                     var response = Client.DownloadString("https://forvo.com/word/" + word + "/#ru");
 

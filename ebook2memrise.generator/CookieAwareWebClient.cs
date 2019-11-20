@@ -10,9 +10,10 @@ namespace ebook2memrise.generator
     {
         private System.Net.CookieContainer Cookies = new System.Net.CookieContainer();
 
-        public CookieAwareWebClient(string url, string cookies)
+        public CookieAwareWebClient()
         {
-            Cookies.SetCookies(new Uri(url), cookies);
+            Cookies.SetCookies(new Uri("https://context.reverso.net"), "");
+            Cookies.SetCookies(new Uri("https://forvo.com"), "");
         }
 
         protected override System.Net.WebRequest GetWebRequest(Uri address)

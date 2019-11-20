@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ebook2memrise.model", "eboo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ebook2memrise.webjob", "ebook2memrise.webjob\ebook2memrise.webjob.csproj", "{CFB91041-C6FE-48E6-BF2A-E108F51C9080}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ebook2memrise.generator", "ebook2memrise.generator\ebook2memrise.generator.csproj", "{BC182B62-7F84-4713-BF63-717B22D99490}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Azure|Any CPU = Azure|Any CPU
@@ -55,8 +57,19 @@ Global
 		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Local|Any CPU.Build.0 = Local|Any CPU
 		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Azure|Any CPU.ActiveCfg = Release|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Azure|Any CPU.Build.0 = Release|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Local|Any CPU.ActiveCfg = Release|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Local|Any CPU.Build.0 = Release|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC182B62-7F84-4713-BF63-717B22D99490}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DB80CBAA-1066-40B1-87BD-CAE8ED86735D}
 	EndGlobalSection
 EndGlobal

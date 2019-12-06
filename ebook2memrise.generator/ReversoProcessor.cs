@@ -31,8 +31,12 @@ namespace ebook2memrise.generator
                     + " " +
                     Trim(s?.SelectSingleNode("div[@class='trg ltr']/span[@class='text']")?.InnerText?.Trim()));
 
+                var prefix = "";
+                if (pos?.ToLowerInvariant() == "verb")
+                    prefix = "to ";
+
                 var result =
-                    $"{string.Join(", ", translations.Take(4))}\t{string.Join(" | ", examples.Take(3))}\t{pos}";
+                    $"{string.Join(", ", translations.Take(4).Select(t => prefix + t))}\t{string.Join(" | ", examples.Take(3))}\t{pos}";
 
                 return result;
             }
@@ -40,6 +44,15 @@ namespace ebook2memrise.generator
             {
                 return string.Empty;
             }
+        }
+
+        public string ProcessForvo(string fileContent)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(fileContent);
+
+            var result = doc.DocumentNode.SelectSingleNode("//p[@class='download']/span[@data-p4]/@data-p4").Attributes.First(a => a.Name == "data-p4").Value;
+            return result;
         }
 
         private string Trim(string content)

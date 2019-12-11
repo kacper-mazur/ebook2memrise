@@ -19,7 +19,8 @@ namespace ebook2memrise.generator
             var wordlist = File.ReadAllLines(@"GoldenDict-history.txt");
 
 
-            
+            System.Diagnostics.Process.Start("https://forvo.com/");
+
             string fileContent = "";
             var processor = new ReversoProcessor();
             int i = 0;

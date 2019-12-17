@@ -28,21 +28,44 @@ namespace ebook2memrise.generator
             {
                 using (var client = new CookieAwareWebClient())
                 {
-                    var data = client.DownloadData("https://context.reverso.net/translation/russian-english/" + word);
-                    var response = Encoding.UTF8.GetString(data);
-                    response = processor.Process(response);
-                    fileContent += word + "\t" + response + "\r\n";
-
                     try
                     {
-                        data = client.DownloadData("https://forvo.com/word/" + word + "/#ru");
-                        response = Encoding.UTF8.GetString(data);
+                        var data = client.DownloadData(
+                            "https://context.reverso.net/translation/russian-english/" + word);
 
-                        var id = processor.ProcessForvo(response);
-                        client.DownloadFile("https://forvo.com/download/mp3/" + word + "/ru/" + id, "Forvo/" + (i++) +"_" + word + ".mp3");
+                        var response = Encoding.UTF8.GetString(data);
+                        var definition = processor.Process(response);
+                        string url = string.Empty;
+
+                        try
+                        {
+                            data = client.DownloadData("https://forvo.com/word/" + word + "/#ru");
+                            response = Encoding.UTF8.GetString(data);
+
+                            var id = processor.ProcessForvo(response);
+                            url = "https://forvo.com/download/mp3/" + word + "/ru/" + id;
+
+                            data = client.DownloadData(url);
+                            response = Encoding.UTF8.GetString(data);
+                            if (response.Contains("To see this page you need to be logged in."))
+                            {
+                                // skip
+                            }
+                            else
+                                client.DownloadFile(url, "Forvo/" + (i++) + "_" + word + ".mp3");
+
+                            url = "https://forvo.com/word/" + word + "/#ru";
+                        }
+                        catch
+                        {
+                            //ignore :-( 
+                        }
+                        fileContent += word + "\t" + definition + "\t" + url + "\r\n";
                     }
-                    catch { 
-                    //ignore :-( 
+                    catch (Exception ex)
+                    {
+                        if (ex.Message.Contains("The remote server returned an error: (404) Not Found."))
+                            continue;
                     }
                 }
                 //Thread.Sleep(TimeSpan.FromSeconds(1));

@@ -19,8 +19,6 @@ namespace ebook2memrise.generator
             var wordlist = File.ReadAllLines(@"GoldenDict-history.txt");
 
 
-            System.Diagnostics.Process.Start("https://forvo.com/");
-
             string fileContent = "";
             var processor = new ReversoProcessor();
             int i = 0;
@@ -54,7 +52,7 @@ namespace ebook2memrise.generator
                             else
                                 client.DownloadFile(url, "Forvo/" + (i++) + "_" + word + ".mp3");
 
-                            url = "https://forvo.com/word/" + word + "/#ru";
+                            System.Diagnostics.Process.Start(url);
                         }
                         catch
                         {
@@ -83,6 +81,15 @@ namespace ebook2memrise.generator
             var existing = File.ReadAllLines(@"Russian-ready.txt");
 
             wordlist = wordlist.Where(w => !existing.Contains(w)).ToArray();
+
+            var duplicates = wordlist
+                .GroupBy(v => v)
+                .ToDictionary(g => g.Key, v => v.Count())
+                .Where(v=> v.Value >1)
+                .Select(v=> v.Key);
+
+            wordlist = wordlist.Where(w => !duplicates.Contains(w)).ToArray();
+
             File.Delete("GoldenDict-history.txt");
             File.WriteAllLines("GoldenDict-history.txt", wordlist);
         }

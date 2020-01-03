@@ -28,6 +28,7 @@ namespace ebook2memrise.generator
                 {
                     try
                     {
+                        // todo use google.translate
                         var data = client.DownloadData(
                             "https://context.reverso.net/translation/russian-english/" + word);
 
@@ -43,6 +44,7 @@ namespace ebook2memrise.generator
                             var id = processor.ProcessForvo(response);
                             url = "https://forvo.com/download/mp3/" + word + "/ru/" + id;
 
+                            // todo use this string "хутор pronunciation in Russian [ru]"
                             data = client.DownloadData(url);
                             response = Encoding.UTF8.GetString(data);
                             if (response.Contains("To see this page you need to be logged in."))

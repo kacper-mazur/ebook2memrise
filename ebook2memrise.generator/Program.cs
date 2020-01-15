@@ -14,6 +14,9 @@ namespace ebook2memrise.generator
         {
             //new ReversoProcessor().Process(File.ReadAllText("Reverso.html"), "проворный");
             //new ReversoProcessor().ProcessForvo(File.ReadAllText("Forvo.html"));
+            //string definition1;
+            //var word1 = new ReversoProcessor().ProcessDictCom(File.ReadAllText("Dict.com.2.html"), out definition1);
+
             SkipExistingWords();
 
             var wordlist = File.ReadAllLines(@"GoldenDict-history.txt");
@@ -28,31 +31,32 @@ namespace ebook2memrise.generator
                 {
                     try
                     {
-                        // todo use google.translate
-                        var data = client.DownloadData(
-                            "https://context.reverso.net/translation/russian-english/" + word);
+                        //var data = client.DownloadData(
+                        //    "https://context.reverso.net/translation/russian-english/" + word);
+                        //var response = Encoding.UTF8.GetString(data);
+                        //var examples = processor.Process(response, true);
 
+                        var data = client.DownloadData("https://www.dict.com/russian-english/" + word);
                         var response = Encoding.UTF8.GetString(data);
-                        var definition = processor.Process(response);
+                        var localWord = processor.ProcessDictCom(word,response, out var definition, out var examples);
                         string url = string.Empty;
 
                         try
                         {
-                            data = client.DownloadData("https://forvo.com/word/" + word + "/#ru");
+                            data = client.DownloadData("https://forvo.com/word/" + localWord + "/#ru");
                             response = Encoding.UTF8.GetString(data);
 
                             var id = processor.ProcessForvo(response);
-                            url = "https://forvo.com/download/mp3/" + word + "/ru/" + id;
+                            url = "https://forvo.com/download/mp3/" + localWord + "/ru/" + id;
 
-                            // todo use this string "хутор pronunciation in Russian [ru]"
-                            data = client.DownloadData(url);
-                            response = Encoding.UTF8.GetString(data);
-                            if (response.Contains("To see this page you need to be logged in."))
-                            {
-                                // skip
-                            }
-                            else
-                                client.DownloadFile(url, "Forvo/" + (i++) + "_" + word + ".mp3");
+                            //data = client.DownloadData(url);
+                            //response = Encoding.UTF8.GetString(data);
+                            //if (response.Contains("To see this page you need to be logged in."))
+                            //{
+                            //    // skip
+                            //}
+                            //else
+                            //    client.DownloadFile(url, "Forvo/" + (i++) + "_" + localWord + ".mp3");
 
                             System.Diagnostics.Process.Start(url);
                         }
@@ -60,7 +64,7 @@ namespace ebook2memrise.generator
                         {
                             //ignore :-( 
                         }
-                        fileContent += word + "\t" + definition + "\t" + url + "\r\n";
+                        fileContent += localWord + "\t" + definition + "\t" + examples + "\t" + url + "\r\n";
                     }
                     catch (Exception ex)
                     {

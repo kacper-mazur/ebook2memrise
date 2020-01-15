@@ -9,7 +9,7 @@ namespace ebook2memrise.generator
 {
     public class ReversoProcessor
     {
-        public string Process(string fileContent)
+        public string Process(string fileContent, bool onlyExamples = false)
         {
             try
             {
@@ -35,7 +35,11 @@ namespace ebook2memrise.generator
                 if (pos?.ToLowerInvariant() == "verb")
                     prefix = "to ";
 
-                var result =
+                string result;
+                if (onlyExamples)
+                    result = string.Join(" | ", examples.Take(3));
+                else
+                    result =
                     $"{string.Join(", ", translations.Take(4).Select(t => prefix + t))}\t{string.Join(" | ", examples.Take(3))}\t{pos}";
 
                 return result;
@@ -51,7 +55,33 @@ namespace ebook2memrise.generator
             var doc = new HtmlDocument();
             doc.LoadHtml(fileContent);
 
-            var result = doc.DocumentNode.SelectSingleNode("//p[@class='download']/span[@data-p4]/@data-p4").Attributes.First(a => a.Name == "data-p4").Value;
+            var result = doc.DocumentNode.SelectSingleNode("//p[@class='download']/span[@data-p3='ru']/@data-p4").Attributes.First(a => a.Name == "data-p4").Value;
+            return result;
+        }
+
+        public string ProcessDictCom(string word, string fileContent, out string definitions, out string examples)
+        {
+            if (fileContent.Contains("Sorry, no entry was found"))
+            {
+                definitions = "";
+                examples = "";
+                return word;
+            }
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(fileContent);
+
+            var result = doc.DocumentNode.SelectSingleNode("//tr[@class='head']//span[@class='lex_ful_entr l1']").InnerText.Replace("&#0769;","");
+            definitions = string.Join(", ",
+                doc.DocumentNode.SelectNodes("//span[@class='lex_ful_tran w l2']")?.Select(t=> t.InnerText).ToArray() 
+                ?? new string[] { });
+
+            examples = //lex_ful_coll2
+                string.Join(", ",
+                    doc.DocumentNode.SelectNodes("//span[@class='lex_ful_coll2']")?.Select(t => t.InnerText) 
+                    ?? new string[] { })
+                    ?.Replace("&#0769;","");
+
             return result;
         }
 

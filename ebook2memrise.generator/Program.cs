@@ -21,10 +21,8 @@ namespace ebook2memrise.generator
 
             var wordlist = File.ReadAllLines(@"GoldenDict-history.txt");
 
-
             string fileContent = "";
             var processor = new ReversoProcessor();
-            int i = 0;
             foreach (var word in wordlist)
             {
                 using (var client = new CookieAwareWebClient())
@@ -43,11 +41,11 @@ namespace ebook2memrise.generator
 
                         try
                         {
-                            data = client.DownloadData("https://forvo.com/word/" + localWord + "/#ru");
+                            data = client.DownloadData("https://forvo.com/word/" + localWord.Replace(" ","_") + "/#ru");
                             response = Encoding.UTF8.GetString(data);
 
                             var id = processor.ProcessForvo(response);
-                            url = "https://forvo.com/download/mp3/" + localWord + "/ru/" + id;
+                            url = "https://forvo.com/download/mp3/" + localWord.Replace(" ", "_") + "/ru/" + id;
 
                             //data = client.DownloadData(url);
                             //response = Encoding.UTF8.GetString(data);
@@ -72,7 +70,6 @@ namespace ebook2memrise.generator
                             continue;
                     }
                 }
-                //Thread.Sleep(TimeSpan.FromSeconds(1));
             }
 
             if (File.Exists("memrise.txt"))

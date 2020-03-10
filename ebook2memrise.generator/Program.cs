@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ebook2memrise.generator
 {
@@ -44,15 +47,6 @@ namespace ebook2memrise.generator
 
                             var id = processor.ProcessForvo(response, countryCode);
                             url = "https://forvo.com/download/mp3/" + localWord.Replace(" ", "_") + "/" + countryCode + "/" + id;
-
-                            //data = client.DownloadData(url);
-                            //response = Encoding.UTF8.GetString(data);
-                            //if (response.Contains("To see this page you need to be logged in."))
-                            //{
-                            //    // skip
-                            //}
-                            //else
-                            //    client.DownloadFile(url, "Forvo/" + (i++) + "_" + localWord + ".mp3");
 
                             System.Diagnostics.Process.Start(url);
                         }

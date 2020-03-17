@@ -38,6 +38,7 @@ namespace ebook2memrise.generator
 
                         var response = Encoding.UTF8.GetString(data);
                         var localWord = processor.ProcessDictCom(word, response, out var definition, out var examples);
+                        localWord = localWord.Replace("1", "").Replace("*", "");
                         string url = string.Empty;
 
                         try

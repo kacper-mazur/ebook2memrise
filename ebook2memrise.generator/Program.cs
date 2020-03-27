@@ -22,7 +22,7 @@ namespace ebook2memrise.generator
             SkipExistingWords();
 
 
-            var wordList = File.ReadAllLines(@"GoldenDict-history.txt");
+            var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt");
             string notFound = "";
 
             string fileContent = "";

@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace ebook2memrise.generator
 {
@@ -88,7 +85,7 @@ namespace ebook2memrise.generator
 
         static void SkipExistingWords()
         {
-            var wordlist = File.ReadAllLines(@"GoldenDict-history.txt");
+            var wordlist = File.ReadAllLines(@"GoldenDict-" + countryCode + ".txt");
             var existing = File.ReadAllLines(@"Files\\Ready-" + countryCode + ".txt");
 
             Console.Write("Before: " + wordlist.Length);
@@ -105,7 +102,7 @@ namespace ebook2memrise.generator
             Console.Write("After: " + wordlist.Length);
 
             File.Delete("GoldenDict-history.txt");
-            File.WriteAllLines("GoldenDict-history.txt", wordlist);
+            File.WriteAllLines("GoldenDict-" + countryCode + ".txt", wordlist);
         }
     }
 }

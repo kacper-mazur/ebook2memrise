@@ -1,6 +1,0 @@
-﻿CREATE TABLE [dbo].[configuration]
-(
-	[Id] INT NOT NULL PRIMARY KEY IDENTITY,
-	[key] VARCHAR(50) NOT NULL,
-	[value] VARCHAR(250) NOT NULL,
-)

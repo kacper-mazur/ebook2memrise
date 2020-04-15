@@ -7,7 +7,9 @@ namespace ebook2memrise.generator
 {
     class Program
     {
-        static string countryCode = "en";
+        static string countryCode = "es";
+        static DictProcessor dictProcessor = new DictProcessor();
+        static ForvoProcessor forvoProcessor = new ForvoProcessor();
 
         static void Main(string[] args)
         {
@@ -18,12 +20,9 @@ namespace ebook2memrise.generator
 
             SkipExistingWords();
 
-
             var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt");
             string notFound = "";
-
             string fileContent = "";
-            var processor = new ReversoProcessor();
             foreach (var word in wordList)
             {
                 using (var client = new CookieAwareWebClient())
@@ -34,25 +33,12 @@ namespace ebook2memrise.generator
                             client.DownloadData("https://www.dict.com/" + GetLanguagePair() + "/" + word);
 
                         var response = Encoding.UTF8.GetString(data);
-                        var localWord = processor.ProcessDictCom(word, response, out var definition, out var examples);
+                        var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
                         localWord = localWord.Replace("1", "").Replace("*", "");
-                        string url = string.Empty;
 
-                        try
-                        {
-                            data = client.DownloadData("https://forvo.com/word/" + localWord.Replace(" ", "_") + "/#" + countryCode);
-                            response = Encoding.UTF8.GetString(data);
+                        fileContent += localWord + "\t" + definition + "\t" + examples + "\r\n";
 
-                            var id = processor.ProcessForvo(response, countryCode);
-                            url = "https://forvo.com/download/mp3/" + localWord.Replace(" ", "_") + "/" + countryCode + "/" + id;
-
-                            System.Diagnostics.Process.Start(url);
-                        }
-                        catch
-                        {
-                            //ignore :-( 
-                        }
-                        fileContent += localWord + "\t" + definition + "\t" + examples + "\t" + url + "\r\n";
+                        DownloadAudio(client, word);
                     }
                     catch (Exception ex)
                     {
@@ -70,6 +56,25 @@ namespace ebook2memrise.generator
             File.WriteAllText("notFound.txt", notFound);
         }
 
+        private static void DownloadAudio(CookieAwareWebClient client, string localWord)
+        {
+            try
+            {
+                var forvoData =
+                    client.DownloadData("https://forvo.com/word/" + localWord.Replace(" ", "_") + "/#" + countryCode);
+                var forvoResponse = Encoding.UTF8.GetString(forvoData);
+
+                var id = forvoProcessor.Process(forvoResponse, countryCode);
+                var url = "https://forvo.com/download/mp3/" + localWord.Replace(" ", "_") + "/" + countryCode + "/" + id;
+
+                System.Diagnostics.Process.Start(url);
+            }
+            catch
+            {
+                //ignore :-( 
+            }
+        }
+
         static string GetLanguagePair()
         {
             switch (countryCode)
@@ -78,6 +83,8 @@ namespace ebook2memrise.generator
                     return "russian-english";
                 case "en":
                     return "english-polish";
+                case "es":
+                    return "spanish-english";
             }
 
             throw new NotImplementedException();

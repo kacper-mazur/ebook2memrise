@@ -50,41 +50,6 @@ namespace ebook2memrise.generator
             }
         }
 
-        public string ProcessForvo(string fileContent, string countryCode)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(fileContent);
-
-            var result = doc.DocumentNode.SelectSingleNode("//p[@class='download']/span[@data-p3='" + countryCode + "']/@data-p4").Attributes.First(a => a.Name == "data-p4").Value;
-            return result;
-        }
-
-        public string ProcessDictCom(string word, string fileContent, out string definitions, out string examples)
-        {
-            if (fileContent.Contains("Sorry, no entry was found"))
-            {
-                definitions = "";
-                examples = "";
-                return word;
-            }
-
-            var doc = new HtmlDocument();
-            doc.LoadHtml(fileContent);
-
-            var result = doc.DocumentNode.SelectSingleNode("//tr[@class='head']//span[@class='lex_ful_entr l1']").InnerText.Replace("&#0769;", "");
-            definitions = string.Join(", ",
-                doc.DocumentNode.SelectNodes("//span[@class='lex_ful_tran w l2']")?.Select(t => t.InnerText).ToArray()
-                ?? new string[] { });
-
-            examples = //lex_ful_coll2
-                string.Join(", ",
-                    doc.DocumentNode.SelectNodes("//span[@class='lex_ful_coll2']")?.Select(t => t.InnerText)
-                    ?? new string[] { })
-                    ?.Replace("&#0769;", "");
-
-            return result;
-        }
-
         private string Trim(string content)
         {
             if (string.IsNullOrEmpty(content))

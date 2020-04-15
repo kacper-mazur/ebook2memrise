@@ -1,8 +1,8 @@
 ﻿sabiduría
-Escudo 
-Sobretodo 
-Arrodillarse 
-Candelabro 
-Hincar
-Mariposa 
-Hada 
+escudo 
+sobretodo 
+arrodillarse 
+candelabro 
+hincar
+mariposa 
+hada 

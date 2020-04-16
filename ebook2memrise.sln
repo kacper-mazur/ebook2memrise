@@ -1,16 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ebook2memrise.web", "ebook2memrise.web\ebook2memrise.web.csproj", "{52A77369-8714-426A-8705-1C8BE19FF162}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ebook2memrise.database", "ebook2memrise.database\ebook2memrise.database.sqlproj", "{93780EA6-5050-4531-8F37-F9BBFA696AE8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ebook2memrise.model", "ebook2memrise.model\ebook2memrise.model.csproj", "{ACC20848-4767-4093-BBB2-535D73EDE5AF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ebook2memrise.webjob", "ebook2memrise.webjob\ebook2memrise.webjob.csproj", "{CFB91041-C6FE-48E6-BF2A-E108F51C9080}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ebook2memrise.generator", "ebook2memrise.generator\ebook2memrise.generator.csproj", "{BC182B62-7F84-4713-BF63-717B22D99490}"
 EndProject
 Global
@@ -21,42 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Azure|Any CPU.ActiveCfg = Azure|Any CPU
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Azure|Any CPU.Build.0 = Azure|Any CPU
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Local|Any CPU.ActiveCfg = Local|Any CPU
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Local|Any CPU.Build.0 = Local|Any CPU
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52A77369-8714-426A-8705-1C8BE19FF162}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Azure|Any CPU.ActiveCfg = Azure|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Azure|Any CPU.Build.0 = Azure|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Azure|Any CPU.Deploy.0 = Azure|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Local|Any CPU.ActiveCfg = Local|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Local|Any CPU.Build.0 = Local|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Local|Any CPU.Deploy.0 = Local|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93780EA6-5050-4531-8F37-F9BBFA696AE8}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Azure|Any CPU.ActiveCfg = Azure|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Azure|Any CPU.Build.0 = Azure|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Local|Any CPU.ActiveCfg = Local|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Local|Any CPU.Build.0 = Local|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACC20848-4767-4093-BBB2-535D73EDE5AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Azure|Any CPU.ActiveCfg = Azure|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Azure|Any CPU.Build.0 = Azure|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Local|Any CPU.ActiveCfg = Local|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Local|Any CPU.Build.0 = Local|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFB91041-C6FE-48E6-BF2A-E108F51C9080}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC182B62-7F84-4713-BF63-717B22D99490}.Azure|Any CPU.ActiveCfg = Release|Any CPU
 		{BC182B62-7F84-4713-BF63-717B22D99490}.Azure|Any CPU.Build.0 = Release|Any CPU
 		{BC182B62-7F84-4713-BF63-717B22D99490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

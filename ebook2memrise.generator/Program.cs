@@ -1,4 +1,6 @@
+using ebook2memrise.generator.Processors;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +12,7 @@ namespace ebook2memrise.generator
         static string countryCode = "es";
         static DictProcessor dictProcessor = new DictProcessor();
         static ForvoProcessor forvoProcessor = new ForvoProcessor();
+        static AudioUploader audioUploader = new AudioUploader();
 
         static void Main(string[] args)
         {
@@ -21,6 +24,7 @@ namespace ebook2memrise.generator
             SkipExistingWords();
 
             var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt");
+            IList<string> toUpload = new List<string>();
             string notFound = "";
             string fileContent = "";
             foreach (var word in wordList)
@@ -29,14 +33,14 @@ namespace ebook2memrise.generator
                 {
                     try
                     {
-                        var data =
-                            client.DownloadData("https://www.dict.com/" + GetLanguagePair() + "/" + word);
+                        //var data =
+                        //    client.DownloadData("https://www.dict.com/" + GetLanguagePair() + "/" + word);
 
-                        var response = Encoding.UTF8.GetString(data);
-                        var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
-                        localWord = localWord.Replace("1", "").Replace("*", "");
+                        //var response = Encoding.UTF8.GetString(data);
+                        //var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
+                        //localWord = localWord.Replace("1", "").Replace("*", "");
 
-                        fileContent += localWord + "\t" + definition + "\t" + examples + "\r\n";
+                        //fileContent += localWord + "\t" + definition + "\t" + examples + "\r\n";
 
                         DownloadAudio(client, word);
                     }
@@ -46,6 +50,7 @@ namespace ebook2memrise.generator
                             continue;
                         notFound += word + "\r\n";
                     }
+                    toUpload.Add(word);
                 }
             }
 
@@ -54,6 +59,8 @@ namespace ebook2memrise.generator
 
             File.WriteAllText("memrise.txt", fileContent);
             File.WriteAllText("notFound.txt", notFound);
+
+            audioUploader.Upload(toUpload, "4");
         }
 
         private static void DownloadAudio(CookieAwareWebClient client, string localWord)
@@ -92,11 +99,11 @@ namespace ebook2memrise.generator
 
         static void SkipExistingWords()
         {
-            var wordlist = File.ReadAllLines(@"GoldenDict-" + countryCode + ".txt");
-            var existing = File.ReadAllLines(@"Files\\Ready-" + countryCode + ".txt");
+            var wordlist = File.ReadAllLines(@"GoldenDict-" + countryCode + ".txt").ToList();
+            var existing = File.ReadAllLines(@"Files\\Ready-" + countryCode + ".txt").ToList();
 
-            Console.Write("Before: " + wordlist.Length);
-            wordlist = wordlist.Where(w => !existing.Contains(w)).ToArray();
+            Console.Write("Before: " + wordlist.Count);
+            wordlist = wordlist.Where(w => !existing.Contains(w)).ToList();
 
             var duplicates = wordlist
                 .GroupBy(v => v)
@@ -104,9 +111,10 @@ namespace ebook2memrise.generator
                 .Where(v => v.Value > 1)
                 .Select(v => v.Key);
 
-            wordlist = wordlist.Where(w => !duplicates.Contains(w)).ToArray();
+            wordlist = wordlist.Where(w => !duplicates.Contains(w)).ToList();
+            wordlist.AddRange(duplicates);
 
-            Console.Write("After: " + wordlist.Length);
+            Console.Write("After: " + wordlist.Count);
 
             File.Delete("GoldenDict-history.txt");
             File.WriteAllLines("GoldenDict-" + countryCode + ".txt", wordlist);

@@ -17,8 +17,7 @@ namespace ebook2memrise.generator.Processors
         private string cookies =
             @"";
 
-
-        public void Upload(IList<string> words, string level)
+        public void OpenBrowser(string url)
         {
             try
             {
@@ -26,25 +25,34 @@ namespace ebook2memrise.generator.Processors
                 StringBuilder sb = new StringBuilder();
                 _driver.Navigate().GoToUrl("https://www.memrise.com/");
 
-                foreach (var cookie in cookies.Split(new[] { "\r\n" }, StringSplitOptions.None))
+                foreach (var cookie in cookies.Split(new[] {"\r\n"}, StringSplitOptions.None))
                     _driver.Manage().Cookies.AddCookie(Deserialize(cookie));
 
-                _driver.Navigate().GoToUrl("https://www.memrise.com/course/2232929/conjugation-of-spanish-verbs/edit/");
+                _driver.Navigate().GoToUrl(url);
+
                 //foreach (var cookie in _driver.Manage().Cookies.AllCookies)
                 //    sb.AppendLine(Serialize(cookie));
 
                 // show full list of words
-                var element = _driver.FindElementByXPath(
-                    "//div[contains(@class, 'level-handle') and contains(text(),'"+ level + "')]//ancestor::div//a[contains(@class,'show-hide')]");
-                element.Click();
+                //var element = _driver.FindElementByXPath("//h3[contains(@class, 'level-name') and contains(text(),'" +
+                //                                         url +
+                //                                         "')]/parent::div//a[contains(@class,'show-hide')]");
+                //element.Click();
+            }
+            finally
+            {
 
+            }
+        }
+
+        public void Upload(IList<string> words, string countryCode)
+        {
+            try
+            {
                 foreach (var word in words)
                 {
                     // upload an audio file
-                    string file =
-                        @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\Español\pronunciation_es_"
-                        + word
-                        + ".mp3";
+                    var file = GetFileName(countryCode, word);
 
                     foreach (var el in
                         _driver.FindElementsByXPath("//div[@class='text' and text()='" + word +
@@ -54,12 +62,10 @@ namespace ebook2memrise.generator.Processors
                     }
                 }
 
-                Thread.Sleep(2000);
-
                 foreach (var word in words)
                 {
                     string file =
-                        @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\Español\pronunciation_es_"
+                        @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\Español\pronunciation_" + countryCode + "_"
                         + word
                         + ".mp3";
                     File.Delete(file);
@@ -69,6 +75,16 @@ namespace ebook2memrise.generator.Processors
             {
                 _driver.Quit();
             }
+        }
+
+        private static string GetFileName(string countryCode, string word)
+        {
+            string file =
+                @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\Español\pronunciation_" + countryCode +
+                "_"
+                + word
+                + ".mp3";
+            return file;
         }
 
         private string Serialize(Cookie c)
@@ -81,6 +97,17 @@ namespace ebook2memrise.generator.Processors
         {
             var c = s.Split(';');
             return new Cookie(c[0], c[1], c[3], null);
+        }
+
+        public static void Concatenate(string first, string second, string output)
+        {
+            Stream w = File.OpenWrite(output);
+
+            File.OpenRead(first).CopyTo(w);
+            File.OpenRead(second).CopyTo(w);
+
+            w.Flush();
+            w.Close();
         }
     }
 }

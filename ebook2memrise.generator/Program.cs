@@ -16,11 +16,6 @@ namespace ebook2memrise.generator
 
         static void Main(string[] args)
         {
-            //new ReversoProcessor().Process(File.ReadAllText("Reverso.html"), "проворный");
-            //new ReversoProcessor().ProcessForvo(File.ReadAllText("Forvo.html"));
-            //string definition1;
-            //var word1 = new ReversoProcessor().ProcessDictCom(File.ReadAllText("Dict.com.2.html"), out definition1);
-
             SkipExistingWords();
 
             var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt");
@@ -33,16 +28,18 @@ namespace ebook2memrise.generator
                 {
                     try
                     {
-                        //var data =
-                        //    client.DownloadData("https://www.dict.com/" + GetLanguagePair() + "/" + word);
+                        var data =
+                            client.DownloadData("https://www.dict.com/" + GetLanguagePair() + "/" + word);
 
-                        //var response = Encoding.UTF8.GetString(data);
-                        //var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
-                        //localWord = localWord.Replace("1", "").Replace("*", "");
+                        var response = Encoding.UTF8.GetString(data);
+                        var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
+                        localWord = localWord.Replace("1", "").Replace("*", "");
 
-                        //fileContent += localWord + "\t" + definition + "\t" + examples + "\r\n";
+                        fileContent += localWord + "\t" + definition + "\t" + examples + "\r\n";
 
-                        DownloadAudio(client, word);
+                        //var localWord = word;
+                        DownloadAudio(client, localWord);
+                        toUpload.Add(localWord);
                     }
                     catch (Exception ex)
                     {
@@ -50,7 +47,6 @@ namespace ebook2memrise.generator
                             continue;
                         notFound += word + "\r\n";
                     }
-                    toUpload.Add(word);
                 }
             }
 
@@ -59,8 +55,12 @@ namespace ebook2memrise.generator
 
             File.WriteAllText("memrise.txt", fileContent);
             File.WriteAllText("notFound.txt", notFound);
+            
+            audioUploader.OpenBrowser("https://www.memrise.com/course/5712969/spanish-from-books-an-movies/edit/");
 
-            audioUploader.Upload(toUpload, "4");
+            System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.txt").FullName);
+
+            audioUploader.Upload(toUpload, countryCode);
         }
 
         private static void DownloadAudio(CookieAwareWebClient client, string localWord)
@@ -101,6 +101,9 @@ namespace ebook2memrise.generator
         {
             var wordlist = File.ReadAllLines(@"GoldenDict-" + countryCode + ".txt").ToList();
             var existing = File.ReadAllLines(@"Files\\Ready-" + countryCode + ".txt").ToList();
+
+            wordlist = wordlist.ConvertAll(d => d.ToLower());
+            existing = existing.ConvertAll(d => d.ToLower());
 
             Console.Write("Before: " + wordlist.Count);
             wordlist = wordlist.Where(w => !existing.Contains(w)).ToList();

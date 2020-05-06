@@ -33,7 +33,7 @@ namespace ebook2memrise.generator
 
                         var response = Encoding.UTF8.GetString(data);
                         var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
-                        localWord = localWord.Replace("1", "").Replace("*", "");
+                        localWord = localWord.Replace("1", "").Replace("*", "").Trim();
 
                         fileContent += localWord + "\t" + definition + "\t" + examples + "\r\n";
 

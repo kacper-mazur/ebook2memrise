@@ -18,8 +18,8 @@ namespace ebook2memrise.generator
         {
             SkipExistingWords();
 
-            var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt");
-            IList<string> toUpload = new List<string>();
+            var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt").ToList();
+            List<string> toUpload = new List<string>();
             string notFound = "";
             string fileContent = "";
             foreach (var word in wordList)
@@ -35,7 +35,7 @@ namespace ebook2memrise.generator
                         var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
                         localWord = localWord.Replace("1", "").Replace("*", "").Trim();
 
-                        fileContent += localWord + "\t" + definition + "\t" + examples + "\r\n";
+                        fileContent += localWord + ";" + definition + ";" + examples + "\r\n";
 
                         //var localWord = word;
                         DownloadAudio(client, localWord);
@@ -47,19 +47,35 @@ namespace ebook2memrise.generator
                             continue;
                         notFound += word + "\r\n";
                     }
+
+                    if (toUpload.Count >= 33)
+                    {
+                        var index = wordList.IndexOf(word);
+                        var waitingWords = wordList.Skip(index + 1);
+
+                        if (File.Exists($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt"))
+                            File.Delete($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt");
+
+                        File.WriteAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt", waitingWords);
+
+                        break;
+                    }
                 }
             }
 
-            if (File.Exists("memrise.txt"))
-                File.Delete("memrise.txt");
+            if (File.Exists("memrise.csv"))
+                File.Delete("memrise.csv");
 
             File.WriteAllText("memrise.txt", fileContent);
             File.WriteAllText("notFound.txt", notFound);
+
+            File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
             
             audioUploader.OpenBrowser("https://www.memrise.com/course/5712969/spanish-from-books-an-movies/edit/");
 
-            System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.txt").FullName);
-
+            //System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
+            System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\Office16\Excel.exe", new FileInfo("memrise.csv").FullName);
+            //
             audioUploader.Upload(toUpload, countryCode);
         }
 

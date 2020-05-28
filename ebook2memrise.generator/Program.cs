@@ -48,7 +48,7 @@ namespace ebook2memrise.generator
                         notFound += word + "\r\n";
                     }
 
-                    if (toUpload.Count >= 33)
+                    if (toUpload.Count >= 55)
                     {
                         var index = wordList.IndexOf(word);
                         var waitingWords = wordList.Skip(index + 1);
@@ -66,8 +66,8 @@ namespace ebook2memrise.generator
             if (File.Exists("memrise.csv"))
                 File.Delete("memrise.csv");
 
-            File.WriteAllText("memrise.txt", fileContent);
-            File.WriteAllText("notFound.txt", notFound);
+            File.WriteAllText("memrise.csv", fileContent, Encoding.GetEncoding(1250));
+            File.WriteAllText("notFound.csv", notFound);
 
             File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
             
@@ -75,7 +75,7 @@ namespace ebook2memrise.generator
 
             //System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
             System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\Office16\Excel.exe", new FileInfo("memrise.csv").FullName);
-            //
+            
             audioUploader.Upload(toUpload, countryCode);
         }
 

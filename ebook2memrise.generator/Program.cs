@@ -9,7 +9,7 @@ namespace ebook2memrise.generator
 {
     class Program
     {
-        static string countryCode = "es";
+        static string countryCode = "ru";
         static DictProcessor dictProcessor = new DictProcessor();
         static ForvoProcessor forvoProcessor = new ForvoProcessor();
         static AudioUploader audioUploader = new AudioUploader();
@@ -48,7 +48,7 @@ namespace ebook2memrise.generator
                         notFound += word + "\r\n";
                     }
 
-                    if (toUpload.Count >= 55)
+                    if (toUpload.Count >= 60)
                     {
                         var index = wordList.IndexOf(word);
                         var waitingWords = wordList.Skip(index + 1);
@@ -66,15 +66,19 @@ namespace ebook2memrise.generator
             if (File.Exists("memrise.csv"))
                 File.Delete("memrise.csv");
 
-            File.WriteAllText("memrise.csv", fileContent, Encoding.GetEncoding(1250));
+            //File.WriteAllText("memrise.csv", fileContent, Encoding.GetEncoding(1250));
+            File.WriteAllText("memrise.csv", fileContent);
             File.WriteAllText("notFound.csv", notFound);
 
             File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
             
-            audioUploader.OpenBrowser("https://www.memrise.com/course/5712969/spanish-from-books-an-movies/edit/");
+            audioUploader.OpenBrowser(
+                countryCode == "es" ? "https://www.memrise.com/course/5712969/espanol-libros-peliculas/edit/"
+                    : (countryCode == "ru" ? "https://www.memrise.com/course/5602608/russkii-knigi-filmy/edit" 
+                        : "https://www.memrise.com/course/5659032/english-books-movies/edit"));
 
-            //System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
-            System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\Office16\Excel.exe", new FileInfo("memrise.csv").FullName);
+            System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
+            //System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\Office16\Excel.exe", new FileInfo("memrise.csv").FullName);
             
             audioUploader.Upload(toUpload, countryCode);
         }

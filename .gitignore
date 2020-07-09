@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /TestApp/key.txt
+/ebook2memrise.generator/Files/Cookie.txt

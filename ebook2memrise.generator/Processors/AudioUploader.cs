@@ -14,8 +14,7 @@ namespace ebook2memrise.generator.Processors
     {
         private OperaDriver _driver;
 
-        private string cookies =
-            @"";
+        private string cookies = File.ReadAllText("Files\\Cookie.txt");
 
         public void OpenBrowser(string url)
         {
@@ -65,7 +64,7 @@ namespace ebook2memrise.generator.Processors
                 foreach (var word in words)
                 {
                     string file =
-                        @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\Español\pronunciation_" + countryCode + "_"
+                        @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\" + countryCode + "\\pronunciation_" + countryCode + "_"
                         + word
                         + ".mp3";
                     File.Delete(file);
@@ -80,7 +79,7 @@ namespace ebook2memrise.generator.Processors
         private static string GetFileName(string countryCode, string word)
         {
             string file =
-                @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\Español\pronunciation_" + countryCode +
+                @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\" + countryCode + "\\pronunciation_" + countryCode +
                 "_"
                 + word
                 + ".mp3";

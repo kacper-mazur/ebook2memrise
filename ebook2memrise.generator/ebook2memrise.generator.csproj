@@ -52,6 +52,9 @@
     <Compile Include="CookieAwareWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Content Include="Files\Cookie.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\Ready-en.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

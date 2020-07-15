@@ -35,11 +35,18 @@ namespace ebook2memrise.generator
                         var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
                         localWord = localWord.Replace("1", "").Replace("*", "").Trim();
 
-                        fileContent += localWord + ";" + definition + ";" + examples + "\r\n";
+                        if (!toUpload.Contains(localWord))
+                        {
+                            fileContent += localWord + ";" + definition + ";" + examples + "\r\n";
 
-                        //var localWord = word;
-                        DownloadAudio(client, localWord);
-                        toUpload.Add(localWord);
+                            //var localWord = word;
+                            DownloadAudio(client, localWord);
+                            toUpload.Add(localWord);
+                        }
+                        else
+                        {
+                            //ignore :)
+                        }
                     }
                     catch (Exception ex)
                     {

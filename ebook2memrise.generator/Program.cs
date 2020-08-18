@@ -16,7 +16,7 @@ namespace ebook2memrise.generator
 
         static void Main(string[] args)
         {
-            SkipExistingWords();
+            var existingWords = SkipExistingWords();
 
             var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt").ToList();
             List<string> toUpload = new List<string>();
@@ -34,7 +34,10 @@ namespace ebook2memrise.generator
                         var response = Encoding.UTF8.GetString(data);
                         var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
                         localWord = localWord.Replace("1", "").Replace("*", "").Trim();
-
+                        
+                        if(existingWords.Contains(localWord))
+                            continue;
+                        
                         if (!toUpload.Contains(localWord))
                         {
                             fileContent += localWord + ";" + definition + ";" + examples + "\r\n";
@@ -55,7 +58,7 @@ namespace ebook2memrise.generator
                         notFound += word + "\r\n";
                     }
 
-                    if (toUpload.Count >= 60)
+                    if (toUpload.Count >= 85)
                     {
                         var index = wordList.IndexOf(word);
                         var waitingWords = wordList.Skip(index + 1);
@@ -87,7 +90,13 @@ namespace ebook2memrise.generator
             System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
             //System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\Office16\Excel.exe", new FileInfo("memrise.csv").FullName);
             
-            audioUploader.Upload(toUpload, countryCode);
+            notFound = audioUploader.Upload(toUpload, countryCode);
+            if (!string.IsNullOrEmpty(notFound))
+            {
+                File.WriteAllText("notFound.csv", notFound);
+                System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe",
+                    new FileInfo("notFound.csv").FullName);
+            }
         }
 
         private static void DownloadAudio(CookieAwareWebClient client, string localWord)
@@ -124,7 +133,7 @@ namespace ebook2memrise.generator
             throw new NotImplementedException();
         }
 
-        static void SkipExistingWords()
+        static IList<string> SkipExistingWords()
         {
             var wordlist = File.ReadAllLines(@"GoldenDict-" + countryCode + ".txt").ToList();
             var existing = File.ReadAllLines(@"Files\\Ready-" + countryCode + ".txt").ToList();
@@ -148,6 +157,7 @@ namespace ebook2memrise.generator
 
             File.Delete("GoldenDict-history.txt");
             File.WriteAllLines("GoldenDict-" + countryCode + ".txt", wordlist);
+            return existing;
         }
     }
 }

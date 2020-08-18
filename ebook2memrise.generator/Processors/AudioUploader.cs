@@ -24,7 +24,7 @@ namespace ebook2memrise.generator.Processors
                 StringBuilder sb = new StringBuilder();
                 _driver.Navigate().GoToUrl("https://www.memrise.com/");
 
-                foreach (var cookie in cookies.Split(new[] {"\r\n"}, StringSplitOptions.None))
+                foreach (var cookie in cookies.Split(new[] { "\r\n" }, StringSplitOptions.None))
                     _driver.Manage().Cookies.AddCookie(Deserialize(cookie));
 
                 _driver.Navigate().GoToUrl(url);
@@ -44,20 +44,33 @@ namespace ebook2memrise.generator.Processors
             }
         }
 
-        public void Upload(IList<string> words, string countryCode)
+        public string Upload(IList<string> words, string countryCode)
         {
+            IList<string> notFound = new List<string>();
             try
             {
                 foreach (var word in words)
                 {
                     // upload an audio file
                     var file = GetFileName(countryCode, word);
-
-                    foreach (var el in
-                        _driver.FindElementsByXPath("//div[@class='text' and text()='" + word +
-                                                    "']//ancestor::tr//div[contains(@class,'files-add')]//input"))
+                    if (!File.Exists(file))
                     {
-                        el.SendKeys(file);
+                        notFound.Add(word);
+                        continue;
+                    }
+
+                    try
+                    {
+                        foreach (var el in
+                            _driver.FindElementsByXPath("//div[@class='text' and text()='" + word +
+                                                        "']//ancestor::tr//div[contains(@class,'files-add')]//input"))
+                        {
+                            el.SendKeys(file);
+                        }
+                    }
+                    catch
+                    {
+                        notFound.Add(word);
                     }
                 }
 
@@ -74,6 +87,8 @@ namespace ebook2memrise.generator.Processors
             {
                 _driver.Quit();
             }
+
+            return string.Join("\r\n", notFound);
         }
 
         private static string GetFileName(string countryCode, string word)

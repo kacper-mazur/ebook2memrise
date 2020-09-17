@@ -16,14 +16,17 @@ namespace ebook2memrise.generator
 
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
             var existingWords = SkipExistingWords();
 
             var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt").ToList();
             List<string> toUpload = new List<string>();
+            List<string> processed = new List<string>();
             string notFound = "";
             string fileContent = "";
             foreach (var word in wordList)
             {
+                Console.WriteLine("Start processing: " + word);
                 using (var client = new CookieAwareWebClient())
                 {
                     try
@@ -34,12 +37,18 @@ namespace ebook2memrise.generator
                         var response = Encoding.UTF8.GetString(data);
                         var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
                         localWord = localWord.Replace("1", "").Replace("*", "").Trim();
-                        
-                        if(existingWords.Contains(localWord))
+                        Console.WriteLine("Translation downloaded for: " + localWord);
+
+                        if (existingWords.Contains(localWord))
+                        {
+                            Console.WriteLine("Duplicate: " + localWord);
                             continue;
-                        
+                        }
+
+                        processed.Add(word);
                         if (!toUpload.Contains(localWord))
                         {
+                            Console.WriteLine("Downloading audio for: " + localWord);
                             fileContent += localWord + ";" + definition + ";" + examples + "\r\n";
 
                             //var localWord = word;
@@ -81,7 +90,8 @@ namespace ebook2memrise.generator
             File.WriteAllText("notFound.csv", notFound);
 
             File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
-            
+            File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", processed);
+
             audioUploader.OpenBrowser(
                 countryCode == "es" ? "https://www.memrise.com/course/5712969/espanol-libros-peliculas/edit/"
                     : (countryCode == "ru" ? "https://www.memrise.com/course/5602608/russkii-knigi-filmy/edit" 
@@ -114,6 +124,7 @@ namespace ebook2memrise.generator
             }
             catch
             {
+                Console.Error.WriteLine("Error while downloading audio for: " + localWord);
                 //ignore :-( 
             }
         }
@@ -141,7 +152,7 @@ namespace ebook2memrise.generator
             wordlist = wordlist.ConvertAll(d => d.ToLower());
             existing = existing.ConvertAll(d => d.ToLower());
 
-            Console.Write("Before: " + wordlist.Count);
+            Console.WriteLine("Total words to process: " + wordlist.Count);
             wordlist = wordlist.Where(w => !existing.Contains(w)).ToList();
 
             var duplicates = wordlist
@@ -153,7 +164,7 @@ namespace ebook2memrise.generator
             wordlist = wordlist.Where(w => !duplicates.Contains(w)).ToList();
             wordlist.AddRange(duplicates);
 
-            Console.Write("After: " + wordlist.Count);
+            Console.WriteLine("After skipping already processed and duplicated: " + wordlist.Count);
 
             File.Delete("GoldenDict-history.txt");
             File.WriteAllLines("GoldenDict-" + countryCode + ".txt", wordlist);

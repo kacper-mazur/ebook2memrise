@@ -9,7 +9,7 @@ namespace ebook2memrise.generator
 {
     class Program
     {
-        static string countryCode = "ru";
+        static string countryCode = "en";
         static DictProcessor dictProcessor = new DictProcessor();
         static ForvoProcessor forvoProcessor = new ForvoProcessor();
         static AudioUploader audioUploader = new AudioUploader();
@@ -67,7 +67,7 @@ namespace ebook2memrise.generator
                         notFound += word + "\r\n";
                     }
 
-                    if (toUpload.Count >= 85)
+                    if (toUpload.Count >= 100)
                     {
                         var index = wordList.IndexOf(word);
                         var waitingWords = wordList.Skip(index + 1);
@@ -86,8 +86,8 @@ namespace ebook2memrise.generator
                 File.Delete("memrise.csv");
 
             //File.WriteAllText("memrise.csv", fileContent, Encoding.GetEncoding(1250));
-            File.WriteAllText("memrise.csv", fileContent);
-            File.WriteAllText("notFound.csv", notFound);
+            File.WriteAllText("memrise.csv", fileContent, new UTF8Encoding(true));
+            File.WriteAllText("notFound.csv", notFound, new UTF8Encoding(true));
 
             File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
             File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", processed);
@@ -97,9 +97,10 @@ namespace ebook2memrise.generator
                     : (countryCode == "ru" ? "https://www.memrise.com/course/5602608/russkii-knigi-filmy/edit" 
                         : "https://www.memrise.com/course/5659032/english-books-movies/edit"));
 
-            System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
-            //System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\Office16\Excel.exe", new FileInfo("memrise.csv").FullName);
+            //System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
+            System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE", new FileInfo("memrise.csv").FullName);
             
+            //toUpload.AddRange(new []{ "blasted", "covert", "slick", "string along", "delude", "hallmark", "chippy", "gutted", "ruffle", "lay off", "put up with", "work up", "wreck", "dwell", "seep", "wince", "appreciatively", "mitt", "reprieve", "adamantly", "reciprocate", "felon", "rile", "cot", "loath", "felony", "deplete", "intimidation", "waver", "poise", "saver", "rave", "cradle", "inconspicuously", "amiss", "cornea", "rescind", "slip", "pertain", "smock", "livid", "muffle", "scrutiny", "selflessness", "randomness", "taint", "transpire", "unwittingly", "blinker", "inadvertent", "dermal", "swathe", "swelter", "intestine", "vulture", "wistful", "gaunt", "unscathed", "bequeath", "homicide", "garish", "muster", "flux", "implacable", "bank on", "loam" });
             notFound = audioUploader.Upload(toUpload, countryCode);
             if (!string.IsNullOrEmpty(notFound))
             {

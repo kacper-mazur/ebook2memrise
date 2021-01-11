@@ -77,7 +77,7 @@ namespace ebook2memrise.generator.Processors
                 foreach (var word in words)
                 {
                     string file =
-                        @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\" + countryCode + "\\pronunciation_" + countryCode + "_"
+                        Constants.AudioFileDirectory + countryCode + "\\pronunciation_" + countryCode + "_"
                         + word
                         + ".mp3";
                     File.Delete(file);
@@ -94,7 +94,7 @@ namespace ebook2memrise.generator.Processors
         private static string GetFileName(string countryCode, string word)
         {
             string file =
-                @"C:\Repos\kacper-mazur\ebook2memrise\ebook2memrise.generator\bin\Debug\" + countryCode + "\\pronunciation_" + countryCode +
+                Constants.AudioFileDirectory + countryCode + "\\pronunciation_" + countryCode +
                 "_"
                 + word
                 + ".mp3";

@@ -11,7 +11,7 @@ namespace ebook2memrise.generator
     {
         public string Process(string word, string fileContent, out string definitions, out string examples)
         {
-            if (fileContent.Contains("Sorry, no entry was found"))
+            if (fileContent.Contains("Sorry, no entry was found") || fileContent.Contains("span class=\"no_entry_found\""))
             {
                 definitions = "";
                 examples = "";

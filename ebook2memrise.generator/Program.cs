@@ -14,16 +14,50 @@ namespace ebook2memrise.generator
         static ForvoProcessor forvoProcessor = new ForvoProcessor();
         static AudioUploader audioUploader = new AudioUploader();
 
+        static List<string> toUpload = new List<string>();
+        static List<string> processed = new List<string>();
+        static string notFound = "";
+        static string fileContent = "";
+
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
             var existingWords = SkipExistingWords();
 
             var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt").ToList();
-            List<string> toUpload = new List<string>();
-            List<string> processed = new List<string>();
-            string notFound = "";
-            string fileContent = "";
+            fileContent = ProcessWords(wordList, existingWords, processed, toUpload, fileContent, ref notFound);
+
+            if (File.Exists("memrise.csv"))
+                File.Delete("memrise.csv");
+
+            //File.WriteAllText("memrise.csv", fileContent, Encoding.GetEncoding(1250));
+            File.WriteAllText("memrise.csv", fileContent, new UTF8Encoding(true));
+            File.WriteAllText("notFound.csv", notFound, new UTF8Encoding(true));
+
+            File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
+            File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", processed);
+
+            audioUploader.OpenBrowser(
+                countryCode == "es" ? "https://www.memrise.com/course/5712969/espanol-libros-peliculas/edit/"
+                    : (countryCode == "ru" ? "https://www.memrise.com/course/5602608/russkii-knigi-filmy/edit" 
+                        : "https://www.memrise.com/course/5659032/english-books-movies/edit"));
+
+            //System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
+            System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE", new FileInfo("memrise.csv").FullName);
+            
+            //toUpload.AddRange(new []{ });
+            notFound = audioUploader.Upload(toUpload, countryCode);
+            if (!string.IsNullOrEmpty(notFound))
+            {
+                File.WriteAllText("notFound.csv", notFound);
+                System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe",
+                    new FileInfo("notFound.csv").FullName);
+            }
+        }
+
+        private static string ProcessWords(List<string> wordList, IList<string> existingWords, List<string> processed, List<string> toUpload,
+            string fileContent, ref string notFound)
+        {
             foreach (var word in wordList)
             {
                 Console.WriteLine("Start processing: " + word);
@@ -72,42 +106,21 @@ namespace ebook2memrise.generator
                         var index = wordList.IndexOf(word);
                         var waitingWords = wordList.Skip(index + 1);
 
-                        if (File.Exists($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt"))
-                            File.Delete($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt");
+                        if (File.Exists(
+                            $"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt"))
+                            File.Delete(
+                                $"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt");
 
-                        File.WriteAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt", waitingWords);
+                        File.WriteAllLines(
+                            $"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\GoldenDict-{countryCode}.txt",
+                            waitingWords);
 
                         break;
                     }
                 }
             }
 
-            if (File.Exists("memrise.csv"))
-                File.Delete("memrise.csv");
-
-            //File.WriteAllText("memrise.csv", fileContent, Encoding.GetEncoding(1250));
-            File.WriteAllText("memrise.csv", fileContent, new UTF8Encoding(true));
-            File.WriteAllText("notFound.csv", notFound, new UTF8Encoding(true));
-
-            File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
-            File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", processed);
-
-            audioUploader.OpenBrowser(
-                countryCode == "es" ? "https://www.memrise.com/course/5712969/espanol-libros-peliculas/edit/"
-                    : (countryCode == "ru" ? "https://www.memrise.com/course/5602608/russkii-knigi-filmy/edit" 
-                        : "https://www.memrise.com/course/5659032/english-books-movies/edit"));
-
-            //System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
-            System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE", new FileInfo("memrise.csv").FullName);
-            
-            //toUpload.AddRange(new []{ "blasted", "covert", "slick", "string along", "delude", "hallmark", "chippy", "gutted", "ruffle", "lay off", "put up with", "work up", "wreck", "dwell", "seep", "wince", "appreciatively", "mitt", "reprieve", "adamantly", "reciprocate", "felon", "rile", "cot", "loath", "felony", "deplete", "intimidation", "waver", "poise", "saver", "rave", "cradle", "inconspicuously", "amiss", "cornea", "rescind", "slip", "pertain", "smock", "livid", "muffle", "scrutiny", "selflessness", "randomness", "taint", "transpire", "unwittingly", "blinker", "inadvertent", "dermal", "swathe", "swelter", "intestine", "vulture", "wistful", "gaunt", "unscathed", "bequeath", "homicide", "garish", "muster", "flux", "implacable", "bank on", "loam" });
-            notFound = audioUploader.Upload(toUpload, countryCode);
-            if (!string.IsNullOrEmpty(notFound))
-            {
-                File.WriteAllText("notFound.csv", notFound);
-                System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe",
-                    new FileInfo("notFound.csv").FullName);
-            }
+            return fileContent;
         }
 
         private static void DownloadAudio(CookieAwareWebClient client, string localWord)

@@ -27,10 +27,11 @@ namespace ebook2memrise.generator.Processors
                 foreach (var cookie in cookies.Split(new[] { "\r\n" }, StringSplitOptions.None))
                     _driver.Manage().Cookies.AddCookie(Deserialize(cookie));
 
-                _driver.Navigate().GoToUrl(url);
-
                 //foreach (var cookie in _driver.Manage().Cookies.AllCookies)
                 //    sb.AppendLine(Serialize(cookie));
+
+                _driver.Navigate().GoToUrl(url);
+
 
                 // show full list of words
                 //var element = _driver.FindElementByXPath("//h3[contains(@class, 'level-name') and contains(text(),'" +
@@ -110,7 +111,7 @@ namespace ebook2memrise.generator.Processors
         private Cookie Deserialize(string s)
         {
             var c = s.Split(';');
-            return new Cookie(c[0], c[1], c[3], null);
+            return new Cookie(c[0], c[1], c[2], c[3], null);
         }
 
         public static void Concatenate(string first, string second, string output)

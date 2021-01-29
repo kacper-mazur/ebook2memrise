@@ -94,7 +94,7 @@ namespace ebook2memrise.generator.Processors
         private static string GetFileName(string countryCode, string word)
         {
             string file =
-                Constants.AudioFileDirectory + countryCode + "\\pronunciation_" + countryCode +
+                Constants.AudioFileDirectory + "\\pronunciation_" + countryCode +
                 "_"
                 + word
                 + ".mp3";

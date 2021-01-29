@@ -8,6 +8,6 @@ namespace ebook2memrise.generator
 {
     public static class Constants
     {
-        public const string AudioFileDirectory = @"C:\Users\k403806\Downloads\Języki\";
+        public const string AudioFileDirectory = @"C:\Users\k403806\Downloads";
     }
 }

@@ -78,7 +78,7 @@ namespace ebook2memrise.generator.Processors
                 foreach (var word in words)
                 {
                     string file =
-                        Constants.AudioFileDirectory + countryCode + "\\pronunciation_" + countryCode + "_"
+                        Constants.AudioFileDirectory  + "\\pronunciation_" + countryCode + "_"
                         + word
                         + ".mp3";
                     File.Delete(file);

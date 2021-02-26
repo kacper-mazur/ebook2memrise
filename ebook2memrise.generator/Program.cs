@@ -9,10 +9,14 @@ namespace ebook2memrise.generator
 {
     class Program
     {
-        static string countryCode = "en";
+        static string countryCode = "es";
+        static string application = "fiszkoteka"; // or memrise
+        static int wordsToProcess = 50;
+
         static DictProcessor dictProcessor = new DictProcessor();
         static ForvoProcessor forvoProcessor = new ForvoProcessor();
         static AudioUploader audioUploader = new AudioUploader();
+        static ReversoProcessor reversoProcessor = new ReversoProcessor();
 
         static List<string> toUpload = new List<string>();
         static List<string> processed = new List<string>();
@@ -25,6 +29,8 @@ namespace ebook2memrise.generator
             var existingWords = SkipExistingWords();
 
             var wordList = File.ReadAllLines($"GoldenDict-{countryCode}.txt").ToList();
+            if (application == "fiszkoteka")
+                audioUploader.OpenBrowser("https://context.reverso.net");
             fileContent = ProcessWords(wordList, existingWords, processed, toUpload, fileContent, ref notFound);
 
             if (File.Exists("memrise.csv"))
@@ -37,16 +43,18 @@ namespace ebook2memrise.generator
             File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", toUpload);
             File.AppendAllLines($"C:\\Repos\\kacper-mazur\\ebook2memrise\\ebook2memrise.generator\\Files\\Ready-{countryCode}.txt", processed);
 
-            audioUploader.OpenBrowser(
-                countryCode == "es" ? "https://www.memrise.com/course/5712969/espanol-libros-peliculas/edit/"
-                    : (countryCode == "ru" ? "https://www.memrise.com/course/5602608/russkii-knigi-filmy/edit" 
-                        : "https://www.memrise.com/course/5659032/english-books-movies/edit"));
+            if (application == "memrise")
+                audioUploader.OpenBrowser(
+                    countryCode == "es" ? "https://www.memrise.com/course/5712969/espanol-libros-peliculas/edit/"
+                        : (countryCode == "ru" ? "https://www.memrise.com/course/5602608/russkii-knigi-filmy/edit"
+                            : "https://www.memrise.com/course/5659032/english-books-movies/edit"));
 
             //System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", new FileInfo("memrise.csv").FullName);
             System.Diagnostics.Process.Start(@"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE", new FileInfo("memrise.csv").FullName);
-            
+
             //toUpload.AddRange(new []{ });
-            notFound = audioUploader.Upload(toUpload, countryCode);
+            if (application == "memrise")
+                notFound = audioUploader.Upload(toUpload, countryCode);
             if (!string.IsNullOrEmpty(notFound))
             {
                 File.WriteAllText("notFound.csv", notFound);
@@ -79,14 +87,22 @@ namespace ebook2memrise.generator
                             continue;
                         }
 
+                        if (application == "fiszkoteka")
+                        {
+                            examples = audioUploader.GetExample("https://context.reverso.net/translation/" + GetLanguagePair() + "/" + localWord, countryCode);
+                        }
+
                         processed.Add(word);
                         if (!toUpload.Contains(localWord))
                         {
-                            Console.WriteLine("Downloading audio for: " + localWord);
                             fileContent += localWord + ";" + definition + ";" + examples + "\r\n";
 
                             //var localWord = word;
-                            DownloadAudio(client, localWord);
+                            if (application == "memrise")
+                            {
+                                Console.WriteLine("Downloading audio for: " + localWord);
+                                DownloadAudio(client, localWord);
+                            }
                             toUpload.Add(localWord);
                         }
                         else
@@ -101,7 +117,7 @@ namespace ebook2memrise.generator
                         notFound += word + "\r\n";
                     }
 
-                    if (toUpload.Count >= 100)
+                    if (toUpload.Count >= wordsToProcess)
                     {
                         var index = wordList.IndexOf(word);
                         var waitingWords = wordList.Skip(index + 1);

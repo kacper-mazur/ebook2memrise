@@ -9,7 +9,7 @@ namespace ebook2memrise.generator
 {
     public class ReversoProcessor
     {
-        public string Process(string fileContent, bool onlyExamples = false)
+        public string Process(string fileContent, string countryCode, bool onlyExamples = false)
         {
             try
             {
@@ -27,8 +27,8 @@ namespace ebook2memrise.generator
                     .Select(s => s.InnerText.Trim());
 
                 var examples = results.SelectNodes("section[@id='examples-content']/div").Select(s =>
-                    Trim(s?.SelectSingleNode("div[@class='src ltr']/span[@lang='ru']")?.InnerText)
-                    + " " +
+                    Trim(s?.SelectSingleNode("div[@class='src ltr']/span[@lang='" + countryCode + "']")?.InnerText)
+                    + ";" +
                     Trim(s?.SelectSingleNode("div[@class='trg ltr']/span[@class='text']")?.InnerText?.Trim()));
 
                 var prefix = "";
@@ -37,7 +37,7 @@ namespace ebook2memrise.generator
 
                 string result;
                 if (onlyExamples)
-                    result = string.Join(" | ", examples.Take(3));
+                    result = string.Join(" | ", examples.Take(1));
                 else
                     result =
                     $"{string.Join(", ", translations.Take(4).Select(t => prefix + t))}\t{string.Join(" | ", examples.Take(3))}\t{pos}";

@@ -45,6 +45,15 @@ namespace ebook2memrise.generator.Processors
             }
         }
 
+        public string GetExample(string url, string countryCode)
+        {
+            _driver.Navigate().GoToUrl(url);
+            var xPath = "//section[@id='examples-content']/div";
+            var response = _driver.FindElementsByXPath(xPath);
+
+            return response.FirstOrDefault()?.Text.Replace("\r\n", ",");
+        }
+
         public string Upload(IList<string> words, string countryCode)
         {
             IList<string> notFound = new List<string>();
@@ -78,7 +87,7 @@ namespace ebook2memrise.generator.Processors
                 foreach (var word in words)
                 {
                     string file =
-                        Constants.AudioFileDirectory  + "\\pronunciation_" + countryCode + "_"
+                        Constants.AudioFileDirectory + "\\pronunciation_" + countryCode + "_"
                         + word
                         + ".mp3";
                     File.Delete(file);

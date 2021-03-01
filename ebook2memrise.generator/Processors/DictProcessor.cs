@@ -9,8 +9,12 @@ namespace ebook2memrise.generator
 {
     public class DictProcessor
     {
-        public string Process(string word, string fileContent, out string definitions, out string examples)
+        public string Process(string word, CookieAwareWebClient client, string languagePair, out string definitions, out string examples)
         {
+            var data =
+                              client.DownloadData("https://www.dict.com/" + languagePair + "/" + word);
+            var fileContent = Encoding.UTF8.GetString(data);
+
             if (fileContent.Contains("Sorry, no entry was found") || fileContent.Contains("span class=\"no_entry_found\""))
             {
                 definitions = "";

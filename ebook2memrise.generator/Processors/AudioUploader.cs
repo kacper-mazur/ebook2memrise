@@ -54,6 +54,32 @@ namespace ebook2memrise.generator.Processors
             return response.FirstOrDefault()?.Text.Replace("\r\n", ",");
         }
 
+        public string ProcessReverso(string word, string languageParir, out string definitions, out string examples)
+        {
+            _driver.Navigate().GoToUrl($"https://context.reverso.net/translation/{languageParir}/{word}");
+
+            string baseWord = word;
+
+            var xPath = "//a[@class='dym-link']";
+            var response = _driver.FindElementsByXPath(xPath);
+            if(response.Any())
+            {
+                baseWord = response.FirstOrDefault().Text;
+                _driver.Navigate().GoToUrl($"https://context.reverso.net/translation/{languageParir}/{baseWord}");
+            }
+
+            xPath = "//div[@id='translations-content']/a | //div[@id='translations-content']/div";
+            response = _driver.FindElementsByXPath(xPath);
+            definitions = string.Join(", ", response.Take(3).Select(r => r.Text));
+
+            xPath = "//section[@id='examples-content']/div";
+            response = _driver.FindElementsByXPath(xPath);
+            examples = response.FirstOrDefault()?.Text.Replace(";",",").Replace("\r\n", ";");
+
+            return baseWord;
+
+        }
+
         public string Upload(IList<string> words, string countryCode)
         {
             IList<string> notFound = new List<string>();

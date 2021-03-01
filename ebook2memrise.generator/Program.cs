@@ -11,7 +11,7 @@ namespace ebook2memrise.generator
     {
         static string countryCode = "es";
         static string application = "fiszkoteka"; // or memrise
-        static int wordsToProcess = 50;
+        static int wordsToProcess = 60;
 
         static DictProcessor dictProcessor = new DictProcessor();
         static ForvoProcessor forvoProcessor = new ForvoProcessor();
@@ -63,6 +63,8 @@ namespace ebook2memrise.generator
             }
         }
 
+
+
         private static string ProcessWords(List<string> wordList, IList<string> existingWords, List<string> processed, List<string> toUpload,
             string fileContent, ref string notFound)
         {
@@ -73,11 +75,12 @@ namespace ebook2memrise.generator
                 {
                     try
                     {
-                        var data =
-                            client.DownloadData("https://www.dict.com/" + GetLanguagePair() + "/" + word);
+                        string definition, examples;
 
-                        var response = Encoding.UTF8.GetString(data);
-                        var localWord = dictProcessor.Process(word, response, out var definition, out var examples);
+                        var localWord = application == "memrise" 
+                            ? dictProcessor.Process(word, client, GetLanguagePair(), out definition, out examples)
+                            : audioUploader.ProcessReverso(word, GetLanguagePair(), out definition, out examples);
+
                         localWord = localWord.Replace("1", "").Replace("*", "").Trim();
                         Console.WriteLine("Translation downloaded for: " + localWord);
 
@@ -85,11 +88,6 @@ namespace ebook2memrise.generator
                         {
                             Console.WriteLine("Duplicate: " + localWord);
                             continue;
-                        }
-
-                        if (application == "fiszkoteka")
-                        {
-                            examples = audioUploader.GetExample("https://context.reverso.net/translation/" + GetLanguagePair() + "/" + localWord, countryCode);
                         }
 
                         processed.Add(word);

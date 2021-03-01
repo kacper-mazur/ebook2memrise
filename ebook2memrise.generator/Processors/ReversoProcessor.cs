@@ -40,7 +40,7 @@ namespace ebook2memrise.generator
                     result = string.Join(" | ", examples.Take(1));
                 else
                     result =
-                    $"{string.Join(", ", translations.Take(4).Select(t => prefix + t))}\t{string.Join(" | ", examples.Take(3))}\t{pos}";
+                    $"{string.Join(", ", translations.Take(2).Select(t => prefix + t))}\t{string.Join(" | ", examples.Take(1))}\t{pos}";
 
                 return result;
             }

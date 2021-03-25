@@ -61,6 +61,7 @@ namespace ebook2memrise.generator
                 System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe",
                     new FileInfo("notFound.csv").FullName);
             }
+            audioUploader.Quit();
         }
 
 

@@ -16,6 +16,11 @@ namespace ebook2memrise.generator.Processors
 
         private string cookies = File.ReadAllText("Files\\Cookie.txt");
 
+        public void Quit()
+        {
+            _driver.Quit();
+        }
+
         public void OpenBrowser(string url)
         {
             try
